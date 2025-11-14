@@ -138,7 +138,7 @@ title: 版权协议与隐私政策
 如对本协议有任何疑问，请通过以下方式联系：
 
 - 网站留言
-- [邮箱联系](mailto:maplezz2025@gmail.com)
+- [邮箱联系](mailto:tong@litong.asia)
 
 ---
 

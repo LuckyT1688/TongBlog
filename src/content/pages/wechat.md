@@ -1,6 +1,10 @@
 ---
-title: 关注公众号
-description: 关注我的公众号「阿飞说游戏」，获取最新文章推送
+title: 联系方式
+description: Tong的联系方式
+draft: true
+---
+
+此页面已禁用。
 draft: false
 ---
 
