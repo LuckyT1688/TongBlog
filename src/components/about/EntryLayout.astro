@@ -1,0 +1,43 @@
+---
+import BaseLayout from "@components/base/BaseLayout.astro";
+import { markdownify } from "@lib/textConverter";
+import { Image } from "astro:assets";
+import type { AboutEntry } from "@/types";
+import { render } from "astro:content";
+import LiquidGlassLess from "@components/common/LiquidGlassLess.astro";
+
+interface Props {
+  entry: AboutEntry;
+}
+
+const { entry } = Astro.props;
+const { title, description, image, imageAlt } = entry.data;
+const { Content } = await render(entry);
+---
+
+<BaseLayout title={title} description={description} image={image?.src}>
+  <section class="">
+    <div class="container pb-4 px-3 lg:px-8">
+      <div class="row justify-center markdown-content">
+        <LiquidGlassLess heavy textClass="p-3 lg:p-8" enableGlassEffect={false}>
+          <!-- <div class="glass rounded-lg indent-8 text-lg/9 p-8 md:col-10 lg:col-7 intersect:animate-fadeUp opacity-0 intersect-no-queue"> -->
+          {
+            image && (
+              <Image
+                class="mx-auto mb-6 rounded-lg"
+                src={image}
+                alt={imageAlt}
+                width={300}
+                height={300}
+                loading="lazy"
+              />
+            )
+          }
+          <h1 set:html={markdownify(title)} class="h1 mb-6 text-center" />
+          <Content />
+          <!-- </div> -->
+        </LiquidGlassLess>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,59 @@
+<!-- Gradient Green Background -->
+<style>
+  html::before,
+  html::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: 400% 400%;
+    background-position: center;
+    z-index: -1;
+    transition: opacity 0.5s ease-in-out;
+    pointer-events: none;
+    animation: gradientShift 15s ease infinite;
+  }
+
+  @keyframes gradientShift {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  html::before {
+    background: linear-gradient(
+      135deg,
+      #e8f5e9 0%,
+      #c8e6c9 25%,
+      #a5d6a7 50%,
+      #81c784 75%,
+      #66bb6a 100%
+    );
+    opacity: 1;
+  }
+
+  html.dark::before {
+    opacity: 0;
+  }
+
+  html::after {
+    background: linear-gradient(
+      135deg,
+      #1b5e20 0%,
+      #2e7d32 25%,
+      #388e3c 50%,
+      #43a047 75%,
+      #4caf50 100%
+    );
+    opacity: 0;
+  }
+
+  html.dark::after {
+    opacity: 1;
+  }
+</style>

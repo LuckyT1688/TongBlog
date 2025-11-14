@@ -1,0 +1,49 @@
+<div id="tcomment" class="markdown-content"></div>
+
+<script define:vars={{
+  twikooEnvId: import.meta.env.PUBLIC_TWIKOO_ENV_ID || ""
+}}>
+  document.addEventListener("astro:page-load", () => {
+    function loadTwikoo() {
+      const commentsContainer = document.getElementById("tcomment");
+      if (commentsContainer) {
+        if (!twikooEnvId) {
+          console.error("Twikoo envId 未配置。请在 .env 中设置 PUBLIC_TWIKOO_ENV_ID。");
+          return;
+        }
+        const script = document.createElement("script");
+        script.src =
+          "https://cdn.jsdelivr.net/npm/twikoo@1.6.44/dist/twikoo.min.js";
+        script.async = true;
+        script.onload = () => {
+          const initScript = document.createElement("script");
+          initScript.innerHTML = `
+            twikoo.init({
+                envId: '${twikooEnvId}',
+                el: '#tcomment',
+            }).then(() => {
+                // Twikoo 初始化完成后，动态加载自定义样式
+                loadTwikooCustomStyles();
+            });
+            
+            // 动态加载 Twikoo 自定义样式的函数
+            function loadTwikooCustomStyles() {
+                if (document.getElementById('twikoo-custom-link')) {
+        return;
+    }
+    
+    const link = document.createElement('link');
+    link.id = 'twikoo-custom-link';
+    link.rel = 'stylesheet';
+    link.href = '/src/styles/twikoo-custom.scss'; // 需要构建工具支持
+    document.head.appendChild(link);
+            }
+        `;
+          document.body.appendChild(initScript);
+        };
+        document.body.appendChild(script);
+      }
+    }
+    loadTwikoo();
+  });
+</script>
