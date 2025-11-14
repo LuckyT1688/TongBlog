@@ -6,7 +6,6 @@ author: "Tong"
 tags: ["示例", "入门"]
 categories: ["教程"]
 draft: false
-image: "@assets/uploads/example.jpg"
 ---
 
 ## 欢迎
