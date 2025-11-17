@@ -3,9 +3,12 @@ import type { GenericEntry } from "@/types";
 // Sort by date
 export const sortByDate = (entries: GenericEntry[]): GenericEntry[] => {
   const sortedEntries = entries.sort(
-    (a: any, b: any) =>
-      new Date(b.data.createdAt && b.data.createdAt).valueOf() -
-      new Date(a.data.createdAt && a.data.createdAt).valueOf(),
+    (a: any, b: any) => {
+      // 优先使用 publishedAt，然后是 date，最后是 createdAt
+      const dateA = a.data.publishedAt || a.data.date || a.data.createdAt;
+      const dateB = b.data.publishedAt || b.data.date || b.data.createdAt;
+      return new Date(dateB).valueOf() - new Date(dateA).valueOf();
+    }
   );
   return sortedEntries;
 };
