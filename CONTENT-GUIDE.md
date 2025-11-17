@@ -281,7 +281,6 @@ status: draft
 | 博客文章 | `src/content/blog/` | `/blog` 列表页和 `/blog/文章名` 详情页 |
 | 笔记动态 | `src/content/notes/` | `/notes` 或首页动态区域 |
 | 关于页面 | `src/content/about/` | `/about` |
-| 友情链接 | `public/data/friends.json` | `/links` |
 
 ## ⚡ 快速开始示例
 

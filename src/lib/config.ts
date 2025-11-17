@@ -46,7 +46,7 @@ export const SITE_INFO = {
   AUTHOR: 'Tong',
   // 本地开发 URL
   DEV_URL: 'http://localhost:4321',
-  LOGO_IMAGE: '/src/assets/image/logo.png',
+  LOGO_IMAGE: '/src/assets/image/立里.jpg',
   KEY_WORDS: '数据分析,Python,Tong',
   GOOGLE_ANALYTICS_ID: 'G-XXXXXX',  // 需改为你自己的Google Analytics ID
   BAIDU_ANALYTICS_ID: 'XXXXXXXXXX', // 需改为你自己的百度分析ID

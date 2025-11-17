@@ -1,7 +1,7 @@
 ---
 title: 关于我
 description: 数据分析师的技术分享空间
-image: "@assets/uploads/tong.jpg"
+image: "@assets/head.png"
 draft: false
 ---
 
