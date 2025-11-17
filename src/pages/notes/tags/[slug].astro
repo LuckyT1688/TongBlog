@@ -26,5 +26,5 @@ export async function getStaticPaths() {
 const { slug } = Astro.params;
 
 // 使用 rewrite 重写到分页路由的第一页，保持 URL 不变
-return Astro.rewrite(`/notes/tags/${encodeURI(slug)}/1`);
+return Astro.rewrite(`/notes/tags/${slug}/1`);
 ---
