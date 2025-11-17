@@ -10,13 +10,13 @@ import {
 
 import { Image } from "astro:assets";
 import {
-  CalendarIcon,
-  FolderIcon,
-  UserCircleIcon,
-  HashtagIcon,
-  ClockIcon,
-  EyeIcon,
-} from "@heroicons/react/24/outline";
+  Calendar,
+  Folder,
+  UserCircle,
+  Hash,
+  Clock,
+  Eye,
+} from "lucide-react";
 import type { GenericEntry, EntryReference, ImageData } from "@/types";
 import LiquidGlassLess from "./LiquidGlassLess.astro";
 import Notice from "./shortcodes/Notice";
@@ -134,32 +134,32 @@ tags?.sort((a: string, b: string) => a.localeCompare(b));
                     href={`/authors/${slugify(author.id)}`}
                     class="flex items-center gap-1 hover:text-primary transition-colors"
                   >
-                    <UserCircleIcon className="w-5 h-5" />
+                    <UserCircle className="w-5 h-5" />
                     <span>{upperHumanize(author.id)}</span>
                   </a>
                 </li>
               )}
               {createdAt && showDate && (
                 <li class="flex items-center gap-1" title="创建日期">
-                  <CalendarIcon className="w-5 h-5" />
+                  <Calendar className="w-5 h-5" />
                   <span>{formatDate(createdAt)}</span>
                 </li>
               )}
               {pubDate && showPubDate && (
                 <li class="flex items-center gap-1" title="发布日期">
-                  <CalendarIcon className="w-5 h-5" />
+                  <Calendar className="w-5 h-5" />
                   <span>Published {formatDate(pubDate)}</span>
                 </li>
               )}
               {modDate && showModDate && (
                 <li class="flex items-center gap-1">
-                  <CalendarIcon className="w-5 h-5" />
+                  <Calendar className="w-5 h-5" />
                   <span>Updated {formatDate(modDate)}</span>
                 </li>
               )}
               {complexity && complexity > 0 && showReadingTime && (
                 <li class="flex items-center gap-1" title="阅读所需时间">
-                  <ClockIcon className="w-5 h-5" />
+                  <Clock className="w-5 h-5" />
                   <span>{readingTime(entry.body!, complexity)}</span>
                 </li>
               )}
@@ -170,7 +170,7 @@ tags?.sort((a: string, b: string) => a.localeCompare(b));
                       href={`/blog/categories/${slugify(category)}`}
                       class="flex items-center gap-1 hover:text-primary transition-colors"
                     >
-                      <FolderIcon className="w-5 h-5" />
+                      <Folder className="w-5 h-5" />
                       <span>{upperHumanize(category)}</span>
                     </a>
                   ))}
@@ -183,7 +183,7 @@ tags?.sort((a: string, b: string) => a.localeCompare(b));
                       href={`/blog/tags/${slugify(tag)}`}
                       class="flex items-center gap-1 hover:text-primary transition-colors"
                     >
-                      <HashtagIcon className="w-5 h-5" />
+                      <Hash className="w-5 h-5" />
                       <span>{lowerHumanize(tag)}</span>
                     </a>
                   ))}

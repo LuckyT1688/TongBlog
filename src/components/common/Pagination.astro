@@ -1,5 +1,5 @@
 ---
-import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import LiquidGlass from "./LiquidGlassLess.astro";
 
 type Props = {
@@ -70,14 +70,14 @@ if (pageIndex < pageCount) {
             class="col rounded px-2 py-1.5 text-txt-p dark:text-darkmode-txt-p"
             aria-label="Previous"
           >
-            <ArrowLeftIcon className="inline-block w-5 h-5" />
+            <ArrowLeft className="inline-block w-5 h-5" />
           </a>
         ) : (
           <span
             class="col rounded px-2 py-1.5 text-txt-light dark:text-darkmode-txt-light"
             aria-label="Previous"
           >
-            <ArrowLeftIcon className="inline-block w-5 h-5" />
+            <ArrowLeft className="inline-block w-5 h-5" />
           </span>
         )}
         {/* page index */}
@@ -116,14 +116,14 @@ if (pageIndex < pageCount) {
             class="col rounded px-2 py-1.5 text-txt-p dark:text-darkmode-txt-p"
             aria-label="Next"
           >
-            <ArrowRightIcon className="inline-block w-5 h-5" />
+            <ArrowRight className="inline-block w-5 h-5" />
           </a>
         ) : (
           <span
             class="col rounded px-2 py-1.5 text-txt-light dark:text-darkmode-txt-light"
             aria-label="Next"
           >
-            <ArrowRightIcon className="inline-block w-5 h-5" />
+            <ArrowRight className="inline-block w-5 h-5" />
           </span>
         )}
       </LiquidGlass>

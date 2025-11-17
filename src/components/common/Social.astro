@@ -1,12 +1,10 @@
 ---
 import type { SocialLinks } from "@/types";
 import { 
-  EnvelopeIcon,
-  GlobeAltIcon,
-} from "@heroicons/react/24/outline";
-import { 
-  ChatBubbleLeftRightIcon,
-} from "@heroicons/react/24/solid";
+  Mail,
+  Globe,
+  MessageCircle,
+} from "lucide-react";
 import GlassButton from "@components/ui/GlassButton.astro";
 
 interface Props {
@@ -35,7 +33,7 @@ const iconClass =
               className="min-w-10 justify-center"
             >
               <span class="sr-only">公众号</span>
-              <ChatBubbleLeftRightIcon className="w-6 h-6   dark:hover:text-green-600 hover:text-green-600 transition duration-300" />
+              <MessageCircle className="w-6 h-6   dark:hover:text-green-600 hover:text-green-600 transition duration-300" />
             </GlassButton>
           </a>
         </li>
@@ -69,7 +67,7 @@ const iconClass =
               className="min-w-10 justify-center"
             >
               <span class="sr-only">Email</span>
-              <EnvelopeIcon className="w-6 h-6  dark:hover:text-yellow-200 hover:text-yellow-200 transition duration-300" />
+              <Mail className="w-6 h-6  dark:hover:text-yellow-200 hover:text-yellow-200 transition duration-300" />
             </GlassButton>
           </a>
         </li>

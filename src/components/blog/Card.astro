@@ -1,7 +1,7 @@
 ---
 import type { BlogEntry } from "@/types";
 import { plainify, slugify } from "@lib/textConverter";
-import { CalendarIcon } from "@heroicons/react/24/outline";
+import { Calendar } from "lucide-react";
 import readingTime from "@lib/readingTime";
 import { formatDate } from "@lib/formatDate";
 import { Image } from "astro:assets";
@@ -108,7 +108,7 @@ const entryDescription =
         {
           entryDate && (
             <div class="flex items-center text-txt-light dark:text-darkmode-txt-light">
-              <CalendarIcon className="mr-1 w-4 h-4" />
+              <Calendar className="mr-1 w-4 h-4" />
               <span>{entryDate}</span>
             </div>
           )

@@ -8,15 +8,14 @@ import LiquidGlass from "@components/common/LiquidGlassLess.astro";
 import { slugify } from "@lib/textConverter";
 import Comment from "@components/base/Comment.astro";
 import {
-  CalendarIcon,
-  MapPinIcon,
-  FaceSmileIcon,
-  ChatBubbleLeftIcon,
-  HeartIcon,
-  BookmarkIcon,
-  ShareIcon,
-} from "@heroicons/react/24/outline";
-import { HeartIcon as HeartIconSolid } from "@heroicons/react/24/solid";
+  Calendar,
+  MapPin,
+  Smile,
+  MessageCircle as ChatBubbleLeft,
+  Heart,
+  Bookmark,
+  Share as ShareIcon,
+} from "lucide-react";
 
 export async function getStaticPaths() {
   const notesEntries = await getCollection("notes");
@@ -113,7 +112,7 @@ const { Content } = await render(entry);
                 {
                   entryDate && (
                     <span class="flex items-center">
-                      <FaRegCalendarAlt className="mr-1" />
+                      <Calendar className="mr-1 w-4 h-4" />
                       {entryDate}
                     </span>
                   )
@@ -130,7 +129,7 @@ const { Content } = await render(entry);
             {
               mood && (
                 <div class="flex items-center text-gray-600 dark:text-gray-300">
-                  <FaSmile className="mr-1" />
+                  <Smile className="mr-1 w-5 h-5" />
                   <span>{mood}</span>
                 </div>
               )
@@ -139,7 +138,7 @@ const { Content } = await render(entry);
             {
               location && (
                 <div class="flex items-center text-gray-600 dark:text-gray-300">
-                  <FaMapMarkerAlt className="mr-1" />
+                  <MapPin className="mr-1 w-5 h-5" />
                   <span>{location}</span>
                 </div>
               )
@@ -203,21 +202,21 @@ const { Content } = await render(entry);
                 id="commentBtn"
                 class="flex items-center gap-2 text-gray-700 dark:text-gray-100 hover:text-blue-500 transition-colors"
               >
-                <FaRegComment />
+                <ChatBubbleLeft className="w-5 h-5" />
                 <span>评论</span>
               </button>
               <button
                 id="bookmarkBtn"
                 class="flex items-center gap-2 text-gray-700 dark:text-gray-100 hover:text-yellow-500 transition-colors"
               >
-                <FaRegBookmark id="bookmarkIcon" />
+                <Bookmark id="bookmarkIcon" className="w-5 h-5" />
                 <span id="bookmarkText">收藏</span>
               </button>
               <button
                 id="shareBtn"
                 class="flex items-center gap-2 text-gray-700 dark:text-gray-100 hover:text-green-500 transition-colors"
               >
-                <FaShare />
+                <ShareIcon className="w-5 h-5" />
                 <span>分享</span>
               </button>
             </div>

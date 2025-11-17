@@ -2,11 +2,11 @@
 import type { BlogEntry } from "@/types";
 import { upperHumanize, plainify, slugify } from "@lib/textConverter";
 import {
-  FolderIcon,
-  ClockIcon,
-  HashtagIcon,
-  CalendarIcon,
-} from "@heroicons/react/24/outline";
+  Folder,
+  Clock,
+  Hash,
+  Calendar,
+} from "lucide-react";
 import readingTime from "@lib/readingTime";
 import { formatDate } from "@lib/formatDate";
 import { Image } from "astro:assets";
@@ -106,7 +106,7 @@ const entryDescription = description?.substring(0, descriptionLength) || "";
                         href={`/blog/categories/${slugify(category)}`}
                         class="flex items-center px-1.5 py-0.5 hover:bg-primary/10 transition-colors duration-200 dark:text-darkmode-txt-light"
                       >
-                        <FolderIcon className="mr-1 w-3 h-3" />
+                        <Folder className="mr-1 w-3 h-3" />
                         <span class="font-medium text-xs">
                           {upperHumanize(category)}
                         </span>
@@ -124,7 +124,7 @@ const entryDescription = description?.substring(0, descriptionLength) || "";
           {
             (
               <div class="items-center text-gray-500 hidden md:flex">
-                <ClockIcon className="mr-1 w-3 h-3 dark:text-darkmode-txt-light" />
+                <Clock className="mr-1 w-3 h-3 dark:text-darkmode-txt-light" />
                 <span class="font-medium text-xs dark:text-darkmode-txt-light">
                   {entryReadingTime}
                 </span>
@@ -134,7 +134,7 @@ const entryDescription = description?.substring(0, descriptionLength) || "";
           {
             entryDate && (
               <div class="flex items-center text-gray-500">
-                <CalendarIcon className="mr-1 w-3 h-3 dark:text-darkmode-txt-s" />
+                <Calendar className="mr-1 w-3 h-3 dark:text-darkmode-txt-s" />
                 <span class="font-medium text-xs dark:text-darkmode-txt-s">
                   {entryDate}
                 </span>
