@@ -30,8 +30,6 @@ import numpy as np
 from datetime import datetime
 
 class DataHandler:
-    """数据处理类"""
-    
     def __init__(self, symbol, start_date, end_date):
         self.symbol = symbol
         self.start_date = start_date
@@ -39,7 +37,6 @@ class DataHandler:
         self.data = None
         
     def load_data(self, filepath):
-        """加载历史数据"""
         self.data = pd.read_csv(
             filepath,
             parse_dates=['date'],
@@ -49,7 +46,6 @@ class DataHandler:
         return self.data
     
     def get_latest_bar(self, N=1):
-        """获取最新N条数据"""
         return self.data.iloc[-N:]
 ```
 
@@ -57,15 +53,12 @@ class DataHandler:
 
 ```python
 class Strategy:
-    """策略基类"""
-    
     def __init__(self, data):
         self.data = data
         self.signals = pd.DataFrame(index=data.index)
         self.signals['signal'] = 0
         
     def generate_signals(self):
-        """生成交易信号 - 子类需要重写此方法"""
         raise NotImplementedError("需要实现 generate_signals 方法")
 ```
 
@@ -73,16 +66,12 @@ class Strategy:
 
 ```python
 class MovingAverageCrossStrategy(Strategy):
-    """双均线交叉策略"""
-    
     def __init__(self, data, short_window=5, long_window=20):
         super().__init__(data)
         self.short_window = short_window
         self.long_window = long_window
         
     def generate_signals(self):
-        """生成交易信号"""
-        # 计算短期和长期均线
         self.signals['short_ma'] = self.data['close'].rolling(
             window=self.short_window
         ).mean()
@@ -90,7 +79,6 @@ class MovingAverageCrossStrategy(Strategy):
             window=self.long_window
         ).mean()
         
-        # 生成信号：短期均线上穿长期均线时买入(1)，下穿时卖出(-1)
         self.signals['signal'] = 0
         self.signals.loc[
             self.signals['short_ma'] > self.signals['long_ma'], 
@@ -101,7 +89,6 @@ class MovingAverageCrossStrategy(Strategy):
             'signal'
         ] = -1
         
-        # 仅在信号变化时记录
         self.signals['positions'] = self.signals['signal'].diff()
         
         return self.signals
@@ -111,8 +98,6 @@ class MovingAverageCrossStrategy(Strategy):
 
 ```python
 class Backtester:
-    """回测引擎"""
-    
     def __init__(self, symbol, signals, initial_capital=100000.0):
         self.symbol = symbol
         self.signals = signals
@@ -120,26 +105,20 @@ class Backtester:
         self.positions = self.generate_positions()
         
     def generate_positions(self):
-        """根据信号生成持仓"""
         positions = pd.DataFrame(index=self.signals.index).fillna(0.0)
         positions[self.symbol] = 100 * self.signals['signal']
         return positions
     
     def backtest_portfolio(self, data):
-        """计算投资组合价值"""
         portfolio = pd.DataFrame(index=data.index)
         
-        # 持仓数量
         portfolio['holdings'] = self.positions[self.symbol] * data['close']
         
-        # 现金
         portfolio['cash'] = self.initial_capital - \
             (self.positions[self.symbol].diff() * data['close']).cumsum()
         
-        # 总资产
         portfolio['total'] = portfolio['cash'] + portfolio['holdings']
         
-        # 收益
         portfolio['returns'] = portfolio['total'].pct_change()
         
         return portfolio
@@ -149,38 +128,30 @@ class Backtester:
 
 ```python
 class PerformanceAnalyzer:
-    """性能分析类"""
-    
     def __init__(self, portfolio, data):
         self.portfolio = portfolio
         self.data = data
         
     def calculate_metrics(self):
-        """计算性能指标"""
         returns = self.portfolio['returns'].dropna()
         
-        # 总收益率
         total_return = (
             self.portfolio['total'].iloc[-1] / 
             self.portfolio['total'].iloc[0] - 1
         ) * 100
         
-        # 年化收益率
         days = (self.portfolio.index[-1] - self.portfolio.index[0]).days
         annual_return = ((1 + total_return/100) ** (365/days) - 1) * 100
         
-        # 夏普比率
         sharpe_ratio = (
             returns.mean() / returns.std() * np.sqrt(252)
         )
         
-        # 最大回撤
         cumulative = (1 + returns).cumprod()
         running_max = cumulative.expanding().max()
         drawdown = (cumulative - running_max) / running_max
         max_drawdown = drawdown.min() * 100
         
-        # 胜率
         win_rate = len(returns[returns > 0]) / len(returns[returns != 0]) * 100
         
         metrics = {
@@ -195,7 +166,6 @@ class PerformanceAnalyzer:
         return metrics
     
     def print_metrics(self):
-        """打印性能指标"""
         metrics = self.calculate_metrics()
         print("=" * 50)
         print("策略性能报告")
@@ -208,9 +178,7 @@ class PerformanceAnalyzer:
 ## 完整示例
 
 ```python
-# 运行回测
 if __name__ == "__main__":
-    # 1. 加载数据
     data_handler = DataHandler(
         symbol='AAPL',
         start_date='2023-01-01',
@@ -218,7 +186,6 @@ if __name__ == "__main__":
     )
     data = data_handler.load_data('aapl_data.csv')
     
-    # 2. 生成交易信号
     strategy = MovingAverageCrossStrategy(
         data=data,
         short_window=5,
@@ -226,7 +193,6 @@ if __name__ == "__main__":
     )
     signals = strategy.generate_signals()
     
-    # 3. 执行回测
     backtester = Backtester(
         symbol='AAPL',
         signals=signals,
@@ -234,23 +200,19 @@ if __name__ == "__main__":
     )
     portfolio = backtester.backtest_portfolio(data)
     
-    # 4. 性能分析
     analyzer = PerformanceAnalyzer(portfolio, data)
     analyzer.print_metrics()
     
-    # 5. 可视化（可选）
     import matplotlib.pyplot as plt
     
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8))
     
-    # 价格和均线
     ax1.plot(data.index, data['close'], label='价格')
     ax1.plot(signals.index, signals['short_ma'], label='短期均线')
     ax1.plot(signals.index, signals['long_ma'], label='长期均线')
     ax1.set_ylabel('价格')
     ax1.legend()
     
-    # 组合价值
     ax2.plot(portfolio.index, portfolio['total'])
     ax2.set_ylabel('组合价值')
     ax2.set_xlabel('日期')
@@ -265,7 +227,6 @@ if __name__ == "__main__":
 
 ```python
 def apply_commission(self, trades, commission_rate=0.001):
-    """应用交易佣金"""
     return trades * (1 - commission_rate)
 ```
 
@@ -273,7 +234,6 @@ def apply_commission(self, trades, commission_rate=0.001):
 
 ```python
 def apply_slippage(self, price, slippage_pct=0.001):
-    """应用滑点"""
     return price * (1 + slippage_pct)
 ```
 
@@ -281,7 +241,6 @@ def apply_slippage(self, price, slippage_pct=0.001):
 
 ```python
 def kelly_criterion(self, win_rate, win_loss_ratio):
-    """凯利公式计算最优仓位"""
     return (win_rate * win_loss_ratio - (1 - win_rate)) / win_loss_ratio
 ```
 

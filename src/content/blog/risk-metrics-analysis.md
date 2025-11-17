@@ -29,23 +29,13 @@ import pandas as pd
 import numpy as np
 
 def calculate_volatility(returns, window=20, annualize=True):
-    """
-    计算历史波动率
-    
-    参数:
-        returns: 收益率序列
-        window: 滚动窗口期
-        annualize: 是否年化
-    """
     volatility = returns.rolling(window=window).std()
     
     if annualize:
-        # 假设一年 252 个交易日
         volatility = volatility * np.sqrt(252)
     
     return volatility
 
-# 示例
 returns = df['close'].pct_change()
 vol = calculate_volatility(returns, window=20)
 print(f"当前波动率: {vol.iloc[-1]:.2%}")
@@ -55,10 +45,6 @@ print(f"当前波动率: {vol.iloc[-1]:.2%}")
 
 ```python
 def ewma_volatility(returns, lambda_param=0.94):
-    """
-    指数加权移动平均波动率
-    常用于 RiskMetrics 模型
-    """
     variance = returns.var()
     ewma_var = [variance]
     
@@ -76,18 +62,9 @@ def ewma_volatility(returns, lambda_param=0.94):
 
 ```python
 def historical_var(returns, confidence_level=0.95):
-    """
-    历史模拟法计算 VaR
-    
-    参数:
-        returns: 历史收益率
-        confidence_level: 置信水平（如 0.95 表示 95%）
-    """
-    # 计算分位数
     var = np.percentile(returns, (1 - confidence_level) * 100)
     return abs(var)
 
-# 示例
 var_95 = historical_var(returns, 0.95)
 print(f"95% VaR: {var_95:.2%}")
 print(f"含义: 95%置信度下，单日最大损失不超过 {var_95:.2%}")
@@ -97,15 +74,11 @@ print(f"含义: 95%置信度下，单日最大损失不超过 {var_95:.2%}")
 
 ```python
 def parametric_var(returns, confidence_level=0.95):
-    """
-    参数法计算 VaR（假设收益率服从正态分布）
-    """
     from scipy import stats
     
     mean = returns.mean()
     std = returns.std()
     
-    # 获取对应置信水平的 z 值
     z_score = stats.norm.ppf(1 - confidence_level)
     
     var = -(mean + z_score * std)
@@ -119,16 +92,11 @@ print(f"95% VaR (参数法): {var_95_parametric:.2%}")
 
 ```python
 def monte_carlo_var(returns, confidence_level=0.95, n_simulations=10000):
-    """
-    蒙特卡洛模拟法计算 VaR
-    """
     mean = returns.mean()
     std = returns.std()
     
-    # 生成模拟收益率
     simulated_returns = np.random.normal(mean, std, n_simulations)
     
-    # 计算 VaR
     var = np.percentile(simulated_returns, (1 - confidence_level) * 100)
     return abs(var)
 ```
@@ -137,23 +105,14 @@ def monte_carlo_var(returns, confidence_level=0.95, n_simulations=10000):
 
 ```python
 def calculate_cvar(returns, confidence_level=0.95):
-    """
-    计算条件在险价值（CVaR）
-    也称为 Expected Shortfall (ES)
-    
-    CVaR 是超过 VaR 的损失的平均值
-    """
     var = historical_var(returns, confidence_level)
     
-    # 找出超过 VaR 的所有损失
     tail_losses = returns[returns <= -var]
     
-    # 计算平均值
     cvar = abs(tail_losses.mean())
     
     return cvar
 
-# 示例
 cvar_95 = calculate_cvar(returns, 0.95)
 print(f"95% CVaR: {cvar_95:.2%}")
 print(f"含义: 在最坏的 5% 情况下，平均损失为 {cvar_95:.2%}")
@@ -163,42 +122,22 @@ print(f"含义: 在最坏的 5% 情况下，平均损失为 {cvar_95:.2%}")
 
 ```python
 def sharpe_ratio(returns, risk_free_rate=0.03, periods=252):
-    """
-    计算夏普比率
-    
-    参数:
-        returns: 收益率序列
-        risk_free_rate: 无风险利率（年化）
-        periods: 年化周期（252 为交易日）
-    """
-    # 计算超额收益
     excess_returns = returns - risk_free_rate / periods
     
-    # 计算夏普比率
     sharpe = excess_returns.mean() / excess_returns.std() * np.sqrt(periods)
     
     return sharpe
 
-# 示例
 sr = sharpe_ratio(returns)
 print(f"夏普比率: {sr:.2f}")
-
-# 夏普比率解读:
-# > 1: 较好
-# > 2: 很好
-# > 3: 优秀
 ```
 
 ## 5. 索提诺比率
 
 ```python
 def sortino_ratio(returns, risk_free_rate=0.03, periods=252):
-    """
-    索提诺比率（只考虑下行波动率）
-    """
     excess_returns = returns - risk_free_rate / periods
     
-    # 只计算负收益的标准差
     downside_returns = excess_returns[excess_returns < 0]
     downside_std = downside_returns.std()
     
@@ -211,28 +150,18 @@ def sortino_ratio(returns, risk_free_rate=0.03, periods=252):
 
 ```python
 def maximum_drawdown(returns):
-    """
-    计算最大回撤及相关信息
-    """
-    # 计算累计收益
     cumulative = (1 + returns).cumprod()
     
-    # 计算历史最高点
     running_max = cumulative.expanding().max()
     
-    # 计算回撤
     drawdown = (cumulative - running_max) / running_max
     
-    # 最大回撤
     max_dd = drawdown.min()
     
-    # 最大回撤发生的日期
     max_dd_date = drawdown.idxmin()
     
-    # 回撤前的高点日期
     peak_date = cumulative[:max_dd_date].idxmax()
     
-    # 恢复日期（如果已恢复）
     recovery_date = None
     if cumulative[max_dd_date:].max() >= cumulative[peak_date]:
         recovery_date = cumulative[max_dd_date:][
@@ -248,7 +177,6 @@ def maximum_drawdown(returns):
                         else (recovery_date - peak_date).days
     }
 
-# 示例
 mdd_info = maximum_drawdown(returns)
 print(f"最大回撤: {mdd_info['最大回撤']:.2%}")
 print(f"回撤持续: {mdd_info['回撤持续天数']} 天")
@@ -258,9 +186,6 @@ print(f"回撤持续: {mdd_info['回撤持续天数']} 天")
 
 ```python
 def calmar_ratio(returns, periods=252):
-    """
-    卡玛比率 = 年化收益率 / 最大回撤
-    """
     annual_return = returns.mean() * periods
     max_dd = abs(maximum_drawdown(returns)['最大回撤'])
     
@@ -272,14 +197,10 @@ def calmar_ratio(returns, periods=252):
 
 ```python
 def risk_report(returns, initial_capital=100000):
-    """
-    生成综合风险报告
-    """
     print("=" * 60)
     print("风险分析报告")
     print("=" * 60)
     
-    # 基础统计
     print(f"\n【基础统计】")
     print(f"样本数量: {len(returns)}")
     print(f"平均日收益率: {returns.mean():.4%}")
@@ -287,7 +208,6 @@ def risk_report(returns, initial_capital=100000):
     print(f"收益率标准差: {returns.std():.4%}")
     print(f"年化波动率: {returns.std() * np.sqrt(252):.2%}")
     
-    # VaR 和 CVaR
     print(f"\n【在险价值】")
     var_95 = historical_var(returns, 0.95)
     var_99 = historical_var(returns, 0.99)
@@ -299,7 +219,6 @@ def risk_report(returns, initial_capital=100000):
     print(f"95% CVaR: {cvar_95:.2%} (约 ${initial_capital * cvar_95:,.0f})")
     print(f"99% CVaR: {cvar_99:.2%} (约 ${initial_capital * cvar_99:,.0f})")
     
-    # 风险调整收益指标
     print(f"\n【风险调整收益】")
     sr = sharpe_ratio(returns)
     sortino = sortino_ratio(returns)
@@ -309,7 +228,6 @@ def risk_report(returns, initial_capital=100000):
     print(f"索提诺比率: {sortino:.2f}")
     print(f"卡玛比率: {calmar:.2f}")
     
-    # 回撤分析
     print(f"\n【回撤分析】")
     mdd_info = maximum_drawdown(returns)
     print(f"最大回撤: {mdd_info['最大回撤']:.2%}")
@@ -317,7 +235,6 @@ def risk_report(returns, initial_capital=100000):
     print(f"最大回撤日期: {mdd_info['最大回撤日期'].strftime('%Y-%m-%d')}")
     print(f"持续天数: {mdd_info['回撤持续天数']} 天")
     
-    # 胜率
     print(f"\n【交易统计】")
     win_rate = len(returns[returns > 0]) / len(returns[returns != 0])
     avg_win = returns[returns > 0].mean() if len(returns[returns > 0]) > 0 else 0
@@ -330,7 +247,6 @@ def risk_report(returns, initial_capital=100000):
     
     print("=" * 60)
 
-# 使用示例
 risk_report(returns, initial_capital=100000)
 ```
 

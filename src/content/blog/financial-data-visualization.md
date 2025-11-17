@@ -42,14 +42,10 @@ plt.style.use('seaborn-v0_8-darkgrid')
 
 ```python
 def plot_candlestick_mpf(data, title="K线图"):
-    """使用 mplfinance 绘制K线图"""
-    
-    # 添加移动平均线
     ma_lines = mpf.make_addplot(data[['MA5', 'MA20']], 
                                 panel=0, 
                                 width=0.8)
     
-    # 绘制图表
     mpf.plot(
         data,
         type='candle',
@@ -67,8 +63,6 @@ def plot_candlestick_mpf(data, title="K线图"):
 
 ```python
 def plot_candlestick_plotly(data, title="交互式K线图"):
-    """使用 Plotly 绘制交互式K线图"""
-    
     fig = make_subplots(
         rows=2, cols=1,
         shared_xaxes=True,
@@ -77,7 +71,6 @@ def plot_candlestick_plotly(data, title="交互式K线图"):
         subplot_titles=(title, '成交量')
     )
     
-    # K线图
     fig.add_trace(
         go.Candlestick(
             x=data.index,
@@ -90,7 +83,6 @@ def plot_candlestick_plotly(data, title="交互式K线图"):
         row=1, col=1
     )
     
-    # 移动平均线
     fig.add_trace(
         go.Scatter(
             x=data.index,
@@ -111,7 +103,6 @@ def plot_candlestick_plotly(data, title="交互式K线图"):
         row=1, col=1
     )
     
-    # 成交量
     colors = ['red' if row['close'] > row['open'] else 'green' 
               for _, row in data.iterrows()]
     
@@ -125,7 +116,6 @@ def plot_candlestick_plotly(data, title="交互式K线图"):
         row=2, col=1
     )
     
-    # 更新布局
     fig.update_layout(
         height=800,
         xaxis_rangeslider_visible=False,
@@ -141,23 +131,18 @@ def plot_candlestick_plotly(data, title="交互式K线图"):
 
 ```python
 def plot_macd(data):
-    """绘制 MACD 指标"""
-    
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8), 
                                     sharex=True,
                                     gridspec_kw={'height_ratios': [2, 1]})
     
-    # 价格图
     ax1.plot(data.index, data['close'], label='收盘价', linewidth=1.5)
     ax1.set_ylabel('价格')
     ax1.legend()
     ax1.grid(True, alpha=0.3)
     
-    # MACD 图
     ax2.plot(data.index, data['MACD'], label='MACD', linewidth=1.5)
     ax2.plot(data.index, data['Signal'], label='Signal', linewidth=1.5)
     
-    # MACD 柱状图
     colors = ['red' if val > 0 else 'green' for val in data['MACD_Hist']]
     ax2.bar(data.index, data['MACD_Hist'], 
             label='MACD Histogram', color=colors, alpha=0.3)
@@ -176,15 +161,11 @@ def plot_macd(data):
 
 ```python
 def plot_bollinger_bands(data):
-    """绘制布林带"""
-    
     plt.figure(figsize=(12, 6))
     
-    # 价格线
     plt.plot(data.index, data['close'], label='收盘价', 
              color='black', linewidth=1.5)
     
-    # 布林带
     plt.plot(data.index, data['BB_upper'], label='上轨', 
              color='red', linestyle='--', linewidth=1)
     plt.plot(data.index, data['BB_middle'], label='中轨', 
@@ -192,7 +173,6 @@ def plot_bollinger_bands(data):
     plt.plot(data.index, data['BB_lower'], label='下轨', 
              color='green', linestyle='--', linewidth=1)
     
-    # 填充区域
     plt.fill_between(data.index, data['BB_upper'], data['BB_lower'], 
                      alpha=0.1, color='gray')
     
@@ -211,11 +191,8 @@ def plot_bollinger_bands(data):
 
 ```python
 def plot_returns_distribution(returns):
-    """绘制收益率分布"""
-    
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
     
-    # 直方图
     ax1.hist(returns, bins=50, alpha=0.7, color='steelblue', edgecolor='black')
     ax1.axvline(returns.mean(), color='red', linestyle='--', 
                 label=f'均值: {returns.mean():.4f}')
@@ -227,7 +204,6 @@ def plot_returns_distribution(returns):
     ax1.legend()
     ax1.grid(True, alpha=0.3)
     
-    # QQ图（正态性检验）
     from scipy import stats
     stats.probplot(returns, dist="norm", plot=ax2)
     ax2.set_title('Q-Q 图')
@@ -241,16 +217,12 @@ def plot_returns_distribution(returns):
 
 ```python
 def plot_cumulative_returns(strategy_returns, benchmark_returns=None):
-    """绘制累计收益曲线"""
-    
     plt.figure(figsize=(12, 6))
     
-    # 策略收益
     cumulative_strategy = (1 + strategy_returns).cumprod()
     plt.plot(cumulative_strategy.index, cumulative_strategy, 
              label='策略收益', linewidth=2)
     
-    # 基准收益（如果提供）
     if benchmark_returns is not None:
         cumulative_benchmark = (1 + benchmark_returns).cumprod()
         plt.plot(cumulative_benchmark.index, cumulative_benchmark, 
@@ -269,9 +241,6 @@ def plot_cumulative_returns(strategy_returns, benchmark_returns=None):
 
 ```python
 def plot_drawdown(returns):
-    """绘制回撤曲线"""
-    
-    # 计算回撤
     cumulative = (1 + returns).cumprod()
     running_max = cumulative.expanding().max()
     drawdown = (cumulative - running_max) / running_max
@@ -281,7 +250,6 @@ def plot_drawdown(returns):
                      alpha=0.3, color='red', label='回撤')
     plt.plot(drawdown.index, drawdown, color='darkred', linewidth=1.5)
     
-    # 标注最大回撤
     max_dd_date = drawdown.idxmin()
     max_dd_value = drawdown.min()
     plt.plot(max_dd_date, max_dd_value, 'ro', markersize=10)
@@ -306,19 +274,16 @@ def plot_drawdown(returns):
 
 ```python
 def plot_correlation_heatmap(data):
-    """绘制相关性热力图"""
-    
     import seaborn as sns
     
-    # 计算相关系数矩阵
     corr_matrix = data.corr()
     
     plt.figure(figsize=(10, 8))
     sns.heatmap(corr_matrix, 
-                annot=True,  # 显示数值
-                cmap='coolwarm',  # 颜色方案
-                center=0,  # 中心值
-                square=True,  # 方形单元格
+                annot=True,
+                cmap='coolwarm',
+                center=0,
+                square=True,
                 linewidths=0.5,
                 cbar_kws={"shrink": 0.8})
     
@@ -331,33 +296,27 @@ def plot_correlation_heatmap(data):
 
 ```python
 def create_dashboard(data, returns):
-    """创建综合分析仪表盘"""
-    
     fig = plt.figure(figsize=(16, 10))
     gs = fig.add_gridspec(3, 2, hspace=0.3, wspace=0.3)
     
-    # 1. 价格走势
     ax1 = fig.add_subplot(gs[0, :])
     ax1.plot(data.index, data['close'])
     ax1.set_title('价格走势', fontsize=14, fontweight='bold')
     ax1.set_ylabel('价格')
     ax1.grid(True, alpha=0.3)
     
-    # 2. 成交量
     ax2 = fig.add_subplot(gs[1, 0])
     ax2.bar(data.index, data['volume'], alpha=0.5)
     ax2.set_title('成交量', fontsize=12, fontweight='bold')
     ax2.set_ylabel('成交量')
     ax2.grid(True, alpha=0.3)
     
-    # 3. 收益率分布
     ax3 = fig.add_subplot(gs[1, 1])
     ax3.hist(returns, bins=30, alpha=0.7, edgecolor='black')
     ax3.set_title('收益率分布', fontsize=12, fontweight='bold')
     ax3.set_xlabel('收益率')
     ax3.grid(True, alpha=0.3)
     
-    # 4. 累计收益
     ax4 = fig.add_subplot(gs[2, 0])
     cumulative = (1 + returns).cumprod()
     ax4.plot(cumulative.index, cumulative)
@@ -365,7 +324,6 @@ def create_dashboard(data, returns):
     ax4.set_ylabel('累计收益（倍）')
     ax4.grid(True, alpha=0.3)
     
-    # 5. 回撤
     ax5 = fig.add_subplot(gs[2, 1])
     running_max = cumulative.expanding().max()
     drawdown = (cumulative - running_max) / running_max

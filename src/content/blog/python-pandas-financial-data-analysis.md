@@ -28,41 +28,34 @@ Pandas 为金融数据分析提供了强大的工具：
 import pandas as pd
 import numpy as np
 
-# 读取 CSV 格式的股票数据
 df = pd.read_csv('stock_data.csv', 
                  parse_dates=['date'],
                  index_col='date')
 
-# 查看数据基本信息
-print(df.head())
-print(df.info())
+df.head()
+df.info()
 ```
 
 ### 数据清洗
 
 ```python
-# 处理缺失值
-df = df.dropna()  # 删除缺失值
-# 或使用前向填充
+df = df.dropna()
+# 或者用前向填充
 df = df.fillna(method='ffill')
 
-# 处理重复数据
 df = df.drop_duplicates()
 
-# 数据类型转换
 df['volume'] = df['volume'].astype('int64')
 ```
 
 ## 常用技术指标计算
 
-### 移动平均线 (MA)
+### 移动平均线
 
 ```python
-# 计算简单移动平均
 df['MA5'] = df['close'].rolling(window=5).mean()
 df['MA20'] = df['close'].rolling(window=20).mean()
 
-# 计算指数移动平均
 df['EMA12'] = df['close'].ewm(span=12, adjust=False).mean()
 df['EMA26'] = df['close'].ewm(span=26, adjust=False).mean()
 ```
@@ -70,13 +63,8 @@ df['EMA26'] = df['close'].ewm(span=26, adjust=False).mean()
 ### 收益率计算
 
 ```python
-# 简单收益率
 df['returns'] = df['close'].pct_change()
-
-# 对数收益率
 df['log_returns'] = np.log(df['close'] / df['close'].shift(1))
-
-# 累计收益率
 df['cumulative_returns'] = (1 + df['returns']).cumprod() - 1
 ```
 
@@ -114,40 +102,35 @@ monthly_data = df.resample('M').agg({
 
 ## 性能优化技巧
 
-### 使用向量化操作
+### 用向量化替代循环
 
 ```python
-# 避免使用循环
-# 慢速方式（不推荐）
+# 慢（别这么写）
 for i in range(len(df)):
     df.loc[i, 'signal'] = 1 if df.loc[i, 'close'] > df.loc[i, 'MA20'] else 0
 
-# 快速方式（推荐）
+# 快
 df['signal'] = np.where(df['close'] > df['MA20'], 1, 0)
 ```
 
-### 使用分类数据类型
+### 用 category 节省内存
 
 ```python
-# 对于重复值较多的列，使用 category 类型可节省内存
 df['sector'] = df['sector'].astype('category')
 ```
 
 ## 实战案例：简单的交易信号
 
 ```python
-# 生成基于均线交叉的交易信号
 df['signal'] = 0
-df.loc[df['MA5'] > df['MA20'], 'signal'] = 1  # 买入信号
-df.loc[df['MA5'] < df['MA20'], 'signal'] = -1  # 卖出信号
+df.loc[df['MA5'] > df['MA20'], 'signal'] = 1
+df.loc[df['MA5'] < df['MA20'], 'signal'] = -1
 
-# 计算策略收益
 df['strategy_returns'] = df['signal'].shift(1) * df['returns']
 df['strategy_cumulative'] = (1 + df['strategy_returns']).cumprod() - 1
 
-# 计算夏普比率
 sharpe_ratio = df['strategy_returns'].mean() / df['strategy_returns'].std() * np.sqrt(252)
-print(f"策略夏普比率: {sharpe_ratio:.2f}")
+print(f"夏普比率: {sharpe_ratio:.2f}")
 ```
 
 ## 总结
