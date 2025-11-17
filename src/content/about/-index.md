@@ -67,7 +67,11 @@ draft: false
 
 如果这些文章对你有帮助，欢迎赞赏支持！
 
-![赞赏码](/src/assets/赞赏码.jpg)
+<div style="text-align: center; margin: 2rem 0;">
+
+![赞赏码](@assets/赞赏码.jpg)
+
+</div>
 
 ---
 
