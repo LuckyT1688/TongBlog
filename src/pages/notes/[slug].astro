@@ -252,7 +252,7 @@ const { Content } = await render(entry);
               <h3 class="font-bold mb-4">相关动态</h3>
               <div class="space-y-2">
                 {relatedNotes.map((note) => (
-                  <div class="dark:border-gray-800 p-3 rounded-lg hover:bg-orange-500 dark:hover:bg-orange-500 transition-all duration-300 [&_*]:hover:text-darkmode-txt-p">
+                  <div class="dark:border-gray-800 p-3 rounded-lg hover:bg-teal-500 dark:hover:bg-teal-600 transition-all duration-300 [&_*]:hover:text-white">
                     <a
                       href={`/notes/${slugify(note.data.title)}`}
                       class="block hover:text-primary-500 transition-colors"
@@ -283,7 +283,7 @@ const { Content } = await render(entry);
           <div class="space-y-2">
             {
               latestNotes.map((note) => (
-                <div class="dark:border-gray-800 p-3 rounded-lg hover:bg-orange-500 dark:hover:bg-orange-500 transition-all duration-300 [&_*]:hover:text-darkmode-txt-p">
+                <div class="dark:border-gray-800 p-3 rounded-lg hover:bg-teal-500 dark:hover:bg-teal-600 transition-all duration-300 [&_*]:hover:text-white">
                   <a
                     href={`/notes/${slugify(note.data.title)}`}
                     class="block hover:text-primary-500 transition-colors"

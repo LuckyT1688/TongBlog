@@ -44,28 +44,29 @@ module.exports = {
     extend: {
       colors: {
         txt: {
-          p: "#1b5e20",
-          s: "#2e7d32",
-          light: "#388e3c",
+          p: "#455a64",
+          s: "#546e7a",
+          light: "#607d8b",
         },
         bg: {
-          p: "#f1f8f4",
-          s: "#e8f5e9",
-          t: "#c8e6c9",
+          p: "#f5f7f8",
+          s: "#eceff1",
+          t: "#cfd8dc",
         },
-        border: "#a5d6a7",
+        border: "#90a4ae",
+        primary: "#26a69a",
         darkmode: {
           txt: {
-            p: "#e8f5e9",
-            s: "#c8e6c9",
-            light: "#a5d6a7",
+            p: "#eceff1",
+            s: "#cfd8dc",
+            light: "#b0bec5",
           },
           bg: {
-            p: "#1b3a1f",
-            s: "#2d5233",
-            t: "#3d6b47",
+            p: "#263238",
+            s: "#37474f",
+            t: "#455a64",
           },
-          border: "#4caf50",
+          border: "#546e7a",
         },
       },
       minHeight: {

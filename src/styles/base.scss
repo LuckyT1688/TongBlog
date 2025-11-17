@@ -85,7 +85,7 @@ a {
 
 a.under {
   // 下划线基础样式
-  @apply text-teal-800 dark:text-orange-400;
+  @apply text-teal-700 dark:text-teal-400;
   &::after {
     @apply content-[''] absolute left-0 bottom-0;
     @apply w-0 h-[2px];
