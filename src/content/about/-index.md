@@ -69,7 +69,7 @@ draft: false
 
 <div style="text-align: center; margin: 2rem 0;">
 
-![赞赏码](@assets/赞赏码.jpg)
+<img src="@assets/赞赏码.jpg" alt="赞赏码" style="max-width: 300px; width: 100%; height: auto; border-radius: 8px;" />
 
 </div>
 
