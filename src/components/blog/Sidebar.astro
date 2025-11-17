@@ -99,7 +99,7 @@ const { tags, categories }: Props = Astro.props;
               <li class="inline-block m-1 ">
                 <a
                   aria-label={tag}
-                  href={`/blog/tags/${lowerHumanize(tag)}`}
+                  href={`/blog/tags/${slugify(tag)}`}
                   type="secondary"
                   class="text-sm md:text-lg rounded-sm transition-all px-2 py-1 border-2 border-indigo-500/0 hover:border-slate-500 hover:rounded-lg hover:bg-white/40"
                 >
