@@ -3,4 +3,4 @@ Allow: /
 
 Disallow: /api/*
 
-Sitemap: https://maplezz.com/sitemap-index.xml
+Sitemap: https://litong.asia/sitemap-index.xml
