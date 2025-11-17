@@ -35,127 +35,156 @@ const shareIcon = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBo
 <style>
   .share-toast {
     position: fixed;
-    top: 20px;
-    right: 20px;
-    background: #10b981;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: white;
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
-    font-size: 0.875rem;
+    padding: 1rem 1.5rem;
+    border-radius: 0.75rem;
+    font-size: 0.9rem;
     font-weight: 500;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    animation: slideIn 0.3s ease-out;
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3), 0 5px 15px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    min-width: 280px;
+    text-align: center;
+    white-space: pre-line;
+    line-height: 1.5;
+    animation: slideDown 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
 
   .share-toast.show {
     display: block;
   }
 
-  @keyframes slideIn {
+  @keyframes slideDown {
     from {
-      transform: translateX(100%);
+      transform: translateX(-50%) translateY(-100%);
       opacity: 0;
     }
     to {
-      transform: translateX(0);
+      transform: translateX(-50%) translateY(0);
       opacity: 1;
     }
   }
 
-  @keyframes slideOut {
+  @keyframes slideUp {
     from {
-      transform: translateX(0);
+      transform: translateX(-50%) translateY(0);
       opacity: 1;
     }
     to {
-      transform: translateX(100%);
+      transform: translateX(-50%) translateY(-100%);
       opacity: 0;
     }
   }
 
   .share-toast.hide {
-    animation: slideOut 0.3s ease-in;
+    animation: slideUp 0.3s ease-in;
+  }
+
+  /* 移动端优化 */
+  @media (max-width: 640px) {
+    .share-toast {
+      min-width: 90%;
+      max-width: 90%;
+      font-size: 0.85rem;
+      padding: 0.875rem 1.25rem;
+    }
   }
 </style>
 
 <script type="module" define:vars={{ shareUrl, title }}>
-  const shareBtn = document.getElementById("share-btn");
-  const shareToast = document.getElementById("share-toast");
-
-  // 复制到剪贴板函数
-  async function copyToClipboard(text) {
-    try {
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(text);
-        return true;
-      } else {
-        // 降级方案
-        const textArea = document.createElement("textarea");
-        textArea.value = text;
-        textArea.style.position = "fixed";
-        textArea.style.left = "-999999px";
-        textArea.style.top = "-999999px";
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        const result = document.execCommand("copy");
-        textArea.remove();
-        return result;
-      }
-    } catch (err) {
-      console.error("复制失败:", err);
-      return false;
-    }
-  }
-
-  // 显示提示消息
-  function showToast() {
-    shareToast.classList.remove("hidden", "hide");
-    shareToast.classList.add("show");
-
-    setTimeout(() => {
-      shareToast.classList.add("hide");
-      setTimeout(() => {
-        shareToast.classList.add("hidden");
-        shareToast.classList.remove("show", "hide");
-      }, 300);
-    }, 2000);
-  }
-
-  // 分享按钮点击事件
-  shareBtn.addEventListener("click", async () => {
-    if (shareBtn.disabled) return;
-
-    shareBtn.disabled = true;
-
-    try {
-      const success = await copyToClipboard(shareUrl);
-      if (success) {
-        showToast();
-      } else {
-        console.error("复制链接失败");
-      }
-    } catch (error) {
-      console.error("分享操作失败:", error);
-    } finally {
-      shareBtn.disabled = false;
-    }
-  });
-
   // 初始化函数
-  function init() {
-    // 分享按钮初始化完成
+  function initShareButton() {
+    const shareBtn = document.getElementById("share-btn");
+    const shareToast = document.getElementById("share-toast");
+
+    if (!shareBtn || !shareToast) {
+      console.warn("分享按钮或提示元素未找到");
+      return;
+    }
+
+    // 复制到剪贴板函数
+    async function copyToClipboard(text) {
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } else {
+          // 降级方案
+          const textArea = document.createElement("textarea");
+          textArea.value = text;
+          textArea.style.position = "fixed";
+          textArea.style.left = "-999999px";
+          textArea.style.top = "-999999px";
+          document.body.appendChild(textArea);
+          textArea.focus();
+          textArea.select();
+          const result = document.execCommand("copy");
+          textArea.remove();
+          return result;
+        }
+      } catch (err) {
+        console.error("复制失败:", err);
+        return false;
+      }
+    }
+
+    // 显示提示消息
+    function showToast(message = "链接已复制到剪贴板！") {
+      shareToast.textContent = message;
+      shareToast.classList.remove("hidden", "hide");
+      shareToast.classList.add("show");
+
+      setTimeout(() => {
+        shareToast.classList.add("hide");
+        setTimeout(() => {
+          shareToast.classList.add("hidden");
+          shareToast.classList.remove("show", "hide");
+        }, 300);
+      }, 2500);
+    }
+
+    // 移除旧的事件监听器（如果存在）
+    const newShareBtn = shareBtn.cloneNode(true);
+    shareBtn.parentNode.replaceChild(newShareBtn, shareBtn);
+
+    // 分享按钮点击事件
+    newShareBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (newShareBtn.disabled) return;
+
+      newShareBtn.disabled = true;
+
+      try {
+        const success = await copyToClipboard(shareUrl);
+        if (success) {
+          showToast(`链接已复制！\n${shareUrl}`);
+        } else {
+          showToast("复制失败，请手动复制链接");
+        }
+      } catch (error) {
+        console.error("分享操作失败:", error);
+        showToast("复制失败，请重试");
+      } finally {
+        setTimeout(() => {
+          newShareBtn.disabled = false;
+        }, 500);
+      }
+    });
   }
 
   // Astro 页面导航事件监听
-  document.addEventListener("astro:page-load", init);
+  document.addEventListener("astro:page-load", initShareButton);
 
   // 兼容首次加载和传统页面跳转
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
+    document.addEventListener("DOMContentLoaded", initShareButton);
   } else {
     // 立即执行初始化
-    init();
+    initShareButton();
   }
 </script>
