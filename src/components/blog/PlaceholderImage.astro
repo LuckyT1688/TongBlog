@@ -9,18 +9,18 @@ const { title, className = "" } = Astro.props;
 // 从标题中提取前两个字符作为显示文字
 const displayText = title.slice(0, 2).toUpperCase();
 
-// 预设的渐变背景色组合
+// 预设的渐变背景色组合（采用护眼配色：石板灰、薄荷绿、青蓝系）
 const gradients = [
-  "from-blue-500 to-purple-600",
-  "from-green-400 to-blue-500",
-  "from-purple-500 to-pink-500",
-  "from-yellow-400 to-orange-500",
-  "from-red-400 to-pink-500",
-  "from-indigo-500 to-purple-600",
-  "from-teal-400 to-blue-500",
-  "from-orange-400 to-red-500",
-  "from-cyan-400 to-blue-500",
-  "from-emerald-400 to-teal-500"
+  "from-teal-500 to-cyan-600",        // 薄荷绿到青色
+  "from-slate-500 to-teal-500",       // 石板灰到薄荷绿
+  "from-cyan-400 to-blue-500",        // 青色到蓝色
+  "from-blue-500 to-indigo-500",      // 蓝色到靛蓝
+  "from-teal-400 to-emerald-500",     // 浅薄荷到翠绿
+  "from-slate-600 to-blue-500",       // 深石板到蓝色
+  "from-cyan-500 to-teal-600",        // 青色到深薄荷
+  "from-indigo-500 to-purple-500",    // 靛蓝到紫色
+  "from-emerald-500 to-teal-600",     // 翠绿到深薄荷
+  "from-blue-600 to-cyan-500"         // 深蓝到青色
 ];
 
 // 根据标题生成一个稳定的索引，确保相同标题总是使用相同的渐变

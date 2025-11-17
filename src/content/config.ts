@@ -69,9 +69,11 @@ const blog = defineCollection({
       featured: z.boolean().default(false),
       recommended: z.boolean().default(false),
       views: z.number().default(0),
+      date: z.date().optional(), // 兼容旧字段
       publishedAt: z.date().optional(),
       hideToc: z.boolean().default(false),
       draft: z.boolean().default(false),
+      complexity: z.number().optional(), // 文章复杂度，用于计算阅读时长
     }),
 });
 
