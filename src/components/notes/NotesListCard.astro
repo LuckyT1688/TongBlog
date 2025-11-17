@@ -1,7 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { plainify } from "@lib/textConverter";
-import { FaRegCalendarAlt, FaMapMarkerAlt, FaSmile } from "react-icons/fa";
+import { CalendarIcon, MapPinIcon, FaceSmileIcon } from "@heroicons/react/24/outline";
 import { formatDate } from "@lib/formatDate";
 import { Image } from "astro:assets";
 import defaultImage from "@assets/head.png";
@@ -51,7 +51,7 @@ const contentPreview = entry.body
           {
             entryDate && (
               <span class="flex items-center">
-                <FaRegCalendarAlt className="mr-1" />
+                <CalendarIcon className="mr-1 w-4 h-4" />
                 {entryDate}
               </span>
             )
@@ -59,7 +59,7 @@ const contentPreview = entry.body
           {
             location && (
               <span class="flex items-center ml-2">
-                <FaMapMarkerAlt className="mr-1" />
+                <MapPinIcon className="mr-1 w-4 h-4" />
                 {location}
               </span>
             )
@@ -67,7 +67,7 @@ const contentPreview = entry.body
           {
             mood && (
               <span class="flex items-center ml-2">
-                <FaSmile className="mr-1" />
+                <FaceSmileIcon className="mr-1 w-4 h-4" />
                 {mood}
               </span>
             )

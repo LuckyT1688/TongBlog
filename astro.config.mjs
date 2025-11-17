@@ -19,7 +19,7 @@ const isDevelopment = NODE_ENV === 'development';
 const getSiteUrl = () => {
   switch (NODE_ENV) {
     case 'production':
-      return "https://litong.asia"; // 晏秋二十三的博客域名
+      return "https://tongblog-61e.pages.dev"; // Tong的博客域名
     case 'development':
     case 'test':
     default:

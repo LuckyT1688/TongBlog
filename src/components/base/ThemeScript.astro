@@ -3,14 +3,30 @@
 
   function getTheme(defaultTheme) {
     var darkMode = defaultTheme === "dark" ? true : false;
-    if (localStorage.getItem("theme") === "system") {
-      if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    
+    // 检查是否启用了时间自动切换
+    const autoTimeSwitch = localStorage.getItem("autoTimeSwitch") !== "false";
+    
+    if (autoTimeSwitch) {
+      // 获取当前小时（24小时制）
+      const currentHour = new Date().getHours();
+      // 如果是19:00及以后，或6:00之前，使用深色模式
+      if (currentHour >= 19 || currentHour < 6) {
         darkMode = true;
+      } else {
+        darkMode = false;
       }
-    } else if (localStorage.getItem("theme") === "dark") {
-      darkMode = true;
-    } else if (localStorage.getItem("theme") === "light") {
-      darkMode = false;
+    } else {
+      // 使用用户设置的主题
+      if (localStorage.getItem("theme") === "system") {
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          darkMode = true;
+        }
+      } else if (localStorage.getItem("theme") === "dark") {
+        darkMode = true;
+      } else if (localStorage.getItem("theme") === "light") {
+        darkMode = false;
+      }
     }
     return darkMode;
   }
@@ -33,8 +49,18 @@
     var themeSwitch = document.querySelectorAll("[data-theme-switcher]");
     themeSwitch.forEach((el) => {
       el.addEventListener("change", (e) => {
+        // 用户手动切换时，禁用自动时间切换
+        localStorage.setItem("autoTimeSwitch", "false");
         setTheme(e.target.checked);
       });
     });
   });
+
+  // 每分钟检查一次时间，自动切换主题
+  setInterval(() => {
+    const autoTimeSwitch = localStorage.getItem("autoTimeSwitch") !== "false";
+    if (autoTimeSwitch) {
+      setTheme(getTheme(defaultTheme));
+    }
+  }, 60000); // 60000ms = 1分钟
 </script>

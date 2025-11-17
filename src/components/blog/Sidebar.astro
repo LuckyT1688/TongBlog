@@ -1,6 +1,6 @@
 ---
 import { lowerHumanize, slugify } from "@lib/textConverter";
-import { FaRegFolder, FaHashtag } from "react-icons/fa";
+import { FolderIcon, HashtagIcon } from "@heroicons/react/24/outline";
 // 移除 ScrollArea 导入
 import AuthorSidebar from "@components/common/authorSidebar.astro";
 import LiquidGlassLess from "@components/common/LiquidGlassLess.astro";
@@ -37,7 +37,7 @@ const { tags, categories }: Props = Astro.props;
       <!-- <div> -->
       <h4 class="mb-2 text-base md:text-lg">
         <a href="/blog/categories">
-          <FaRegFolder className={"mr-1 -mt-1.5 inline-block"} />
+          <FolderIcon className={"mr-1 -mt-1.5 inline-block w-5 h-5"} />
            分类
         </a>
       </h4>
@@ -87,7 +87,7 @@ const { tags, categories }: Props = Astro.props;
     <div class="intersect:animate-fadeLeft">
       <h4 class="mb-2 text-base md:text-lg">
         <a href="/blog/tags">
-          <FaHashtag className={"mr-1 -mt-1.5 inline-block"} />
+          <HashtagIcon className={"mr-1 -mt-1.5 inline-block w-5 h-5"} />
            标签
         </a>
       </h4>

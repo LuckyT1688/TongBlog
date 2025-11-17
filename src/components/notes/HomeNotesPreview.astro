@@ -1,7 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { plainify, slugify } from "@lib/textConverter";
-import { FaRegCalendarAlt, FaMapMarkerAlt, FaSmile } from "react-icons/fa";
+import { CalendarIcon, MapPinIcon, FaceSmileIcon } from "@heroicons/react/24/outline";
 import { formatDate } from "@lib/formatDate";
 
 interface Props {
@@ -57,21 +57,21 @@ const displayEntries = entries.slice(0, limit);
                   <div class="flex flex-wrap items-center gap-2 mb-1">
                     {entryDate && (
                       <time class="text-xs text-txt-light dark:text-darkmode-txt-light opacity-70 flex items-center">
-                        <FaRegCalendarAlt className="mr-1 text-[10px]" />
+                        <CalendarIcon className="mr-1 w-3 h-3" />
                         {entryDate}
                       </time>
                     )}
 
                     {mood && (
                       <span class="text-xs text-txt-light dark:text-darkmode-txt-light opacity-70 flex items-center">
-                        <FaSmile className="mr-1 text-[10px]" />
+                        <FaceSmileIcon className="mr-1 w-3 h-3" />
                         {mood}
                       </span>
                     )}
 
                     {location && (
                       <span class="text-xs text-txt-light dark:text-darkmode-txt-light opacity-70 flex items-center">
-                        <FaMapMarkerAlt className="mr-1 text-[10px]" />
+                        <MapPinIcon className="mr-1 w-3 h-3" />
                         {location}
                       </span>
                     )}

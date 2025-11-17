@@ -42,7 +42,7 @@ export const SITE_INFO = {
   // 网站描述
   DESCRIPTION: 'Tong的个人博客，专注于数据分析、Python数据处理等技术分享。',
   // 网站 URL (生产环境)
-  URL: 'https://litong.asia',
+  URL: 'https://tongblog-61e.pages.dev',
   AUTHOR: 'Tong',
   // 本地开发 URL
   DEV_URL: 'http://localhost:4321',

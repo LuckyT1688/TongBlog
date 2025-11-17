@@ -8,16 +8,15 @@ import LiquidGlass from "@components/common/LiquidGlassLess.astro";
 import { slugify } from "@lib/textConverter";
 import Comment from "@components/base/Comment.astro";
 import {
-  FaRegCalendarAlt,
-  FaMapMarkerAlt,
-  FaSmile,
-  FaRegComment,
-  FaRegHeart,
-  FaRegBookmark,
-  FaShare,
-  FaHeartbeat,
-  FaHeart,
-} from "react-icons/fa";
+  CalendarIcon,
+  MapPinIcon,
+  FaceSmileIcon,
+  ChatBubbleLeftIcon,
+  HeartIcon,
+  BookmarkIcon,
+  ShareIcon,
+} from "@heroicons/react/24/outline";
+import { HeartIcon as HeartIconSolid } from "@heroicons/react/24/solid";
 
 export async function getStaticPaths() {
   const notesEntries = await getCollection("notes");

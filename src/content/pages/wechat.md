@@ -17,12 +17,12 @@ draft: false
   <div class="account-info">
     <div class="account-avatar">
       <div class="avatar-circle">
-      <img src="/assets/uploads/picture.jpg" alt="阿飞说游戏" />
+      <img src="/favicon/立里.jpg" alt="Tong" />
         <!-- <span class="avatar-text">@assets/picture.jpg</span> -->
       </div>
     </div>
     <div class="account-details">
-      <h4 class="account-name">阿飞说游戏</h4>
+      <h4 class="account-name">Tong</h4>
       <p class="account-description">分享技术见解与游戏开发心得</p>
     </div>
   </div>
