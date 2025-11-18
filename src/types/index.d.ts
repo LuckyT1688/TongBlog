@@ -8,7 +8,6 @@ export type AuthorsEntry = CollectionEntry<"authors">;
 export type BlogEntry = CollectionEntry<"blog">;
 export type CategoriesEntry = CollectionEntry<"categories">;
 export type TagsEntry = CollectionEntry<"tags">;
-export type NotesEntry = CollectionEntry<"notes">;
 export type GamesEntry = CollectionEntry<"games">;
 export type PagesEntry = CollectionEntry<"pages">;
 export type HomeEntry = CollectionEntry<"home">;
@@ -24,7 +23,6 @@ export type SearchableEntry =
   | AboutEntry
   | AuthorsEntry
   | BlogEntry
-  | NotesEntry
   | PagesEntry
   | DocsEntry
   | GamesEntry

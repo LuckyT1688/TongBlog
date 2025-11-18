@@ -7,8 +7,6 @@
 export const PAGINATION_CONFIG = {
   // 博客文章每页显示数量
   BLOG_ENTRIES_PER_PAGE: 10,
-  // 站点动态默认每页显示数量
-  NOTES_DEFAULT_PAGE_SIZE: 10,
   // 默认分页大小（与 astro.config.mjs 保持一致）
   DEFAULT_PAGE_SIZE: 8,
 } as const;
@@ -19,19 +17,17 @@ export const PAGINATION_CONFIG = {
 
 
 // 导出便捷的获取函数
-export const getPageSize = (type: 'blog' | 'notes' = 'blog'): number => {
+export const getPageSize = (type: 'blog' = 'blog'): number => {
   switch (type) {
     case 'blog':
       return PAGINATION_CONFIG.BLOG_ENTRIES_PER_PAGE;
-    case 'notes':
-      return PAGINATION_CONFIG.NOTES_DEFAULT_PAGE_SIZE;
     default:
       return PAGINATION_CONFIG.DEFAULT_PAGE_SIZE;
   }
 };
 
 // 类型定义
-export type PageType = 'blog' | 'notes';
+export type PageType = 'blog';
 
 //网站信息
 export const SITE_INFO = {

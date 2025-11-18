@@ -176,20 +176,12 @@ const countWords = (text: string): number => {
 // 获取全站字数统计
 export const getTotalWordCount = async (): Promise<string> => {
   try {
-    const [blogEntries, notesEntries] = await Promise.all([
-      getEntries("blog"),
-      getEntries("notes").catch(() => []) // notes 集合可能不存在
-    ]);
+    const blogEntries = await getEntries("blog");
     
     let totalWords = 0;
     
     // 统计博客文章字数
     blogEntries.forEach((entry: any) => {
-      totalWords += countWords(entry.body || '');
-    });
-    
-    // 统计动态字数
-    notesEntries.forEach((entry: any) => {
       totalWords += countWords(entry.body || '');
     });
     

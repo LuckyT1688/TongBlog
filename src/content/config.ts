@@ -100,26 +100,6 @@ const tags = defineCollection({
   }),
 });
 
-// 动态/笔记集合
-const notes = defineCollection({
-  loader: glob({ pattern: "**\/[^_]*.{md,mdx}", base: "./src/content/notes" }),
-  schema: ({ image }) =>
-    baseContent.extend({
-      // 支持多张图片
-      images: z.array(z.object({
-        src: image(),
-        alt: z.string().default(""),
-      })).optional(),
-      // 保留单张图片字段以兼容现有内容
-      image: image().optional(),
-      imageAlt: z.string().default(""),
-      tags: z.array(z.string()).optional(),
-      mood: z.string().optional(),
-      location: z.string().optional(),
-    }),
-});
-
-
 // 页面集合
 const pages = defineCollection({
   loader: glob({ pattern: "**\/[^_]*.{md,mdx}", base: "./src/content/pages" }),
@@ -162,7 +142,7 @@ const home = defineCollection({
 const search = defineCollection({
   loader: glob({ pattern: "-index.{md,mdx}", base: "./src/content/search" }),
   schema: baseContent.extend({
-    searchableCollections: z.array(z.string()).default(["blog", "notes", "pages"]),
+    searchableCollections: z.array(z.string()).default(["blog", "pages"]),
     searchConfig: z.object({
       placeholder: z.string().default("搜索内容..."),
       maxResults: z.number().default(10),
@@ -193,7 +173,6 @@ export const collections = {
   blog,
   categories,
   tags,
-  notes,
   pages,
   home,
   search,

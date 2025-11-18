@@ -5,7 +5,6 @@ import BlogCard from "@components/blog/Card.astro";
 import type { BlogEntry } from "@/types";
 import defaultImg from "@assets/head.png"; // 特色文章默认图片
 import LiquidGlass from "@components/common/LiquidGlassLess.astro";
-import HomeNotesPreview from "@components/notes/HomeNotesPreview.astro";
 import ArticleCalendar from "@components/home/ArticleCalendar.astro";
 import AuthorProfile from "@components/home/AuthorProfile.astro";
 import { type CollectionEntry } from "astro:content";
@@ -21,12 +20,6 @@ import RecommendedReadCardComponent from "@components/blog/RecommendedReadCard.a
 // 获取所有博客文章并排序
 const allPosts = (await getEntries("blog", sortByDate)) as BlogEntry[];
 const publishedPosts = allPosts.filter((post) => post.data.status === "published");
-
-// 获取最新的动态内容
-const latestNotes = (await getEntries(
-  "notes",
-  sortByDate,
-)) as CollectionEntry<"notes">[];
 
 // 取前6篇作为特色文章
 const featuredArticles = publishedPosts.slice(0, 6).map((post) => ({
@@ -193,13 +186,6 @@ const siteStats = await getSiteStats();
               }
             </div>
           </section>
-        </LiquidGlass>
-
-        <!-- </section> -->
-
-        <!-- Site Messages -->
-        <LiquidGlass heavy enableGlassEffect={false}>
-          <HomeNotesPreview entries={latestNotes} limit={6} />
         </LiquidGlass>
 
         <!-- </section> -->
