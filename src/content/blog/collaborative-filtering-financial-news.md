@@ -357,6 +357,4 @@ def deduplicate_recommendations(user_id, new_recs, window_hours=24):
 
 ---
 
-代码已上传到 GitHub: [collaborative-filtering-demo](https://github.com/yourusername/cf-demo)（示例链接，替换成你的）
-
 有问题欢迎留言交流。
