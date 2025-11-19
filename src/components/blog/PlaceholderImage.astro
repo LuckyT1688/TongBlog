@@ -9,64 +9,134 @@ const { title, className = "" } = Astro.props;
 // 从标题中提取前两个字符作为显示文字
 const displayText = title.slice(0, 2).toUpperCase();
 
-// 预设的渐变背景色组合（采用护眼配色：石板灰、薄荷绿、青蓝系）
-const gradients = [
-  "from-teal-500 to-cyan-600",        // 薄荷绿到青色
-  "from-slate-500 to-teal-500",       // 石板灰到薄荷绿
-  "from-cyan-400 to-blue-500",        // 青色到蓝色
-  "from-blue-500 to-indigo-500",      // 蓝色到靛蓝
-  "from-teal-400 to-emerald-500",     // 浅薄荷到翠绿
-  "from-slate-600 to-blue-500",       // 深石板到蓝色
-  "from-cyan-500 to-teal-600",        // 青色到深薄荷
-  "from-indigo-500 to-purple-500",    // 靛蓝到紫色
-  "from-emerald-500 to-teal-600",     // 翠绿到深薄荷
-  "from-blue-600 to-cyan-500"         // 深蓝到青色
-];
-
-// 根据标题生成一个稳定的索引，确保相同标题总是使用相同的渐变
-const getGradientIndex = (str: string) => {
+// 生成稳定的哈希值
+const getHash = (str: string) => {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i);
     hash = ((hash << 5) - hash) + char;
-    hash = hash & hash; // 转换为32位整数
+    hash = hash & hash;
   }
-  return Math.abs(hash) % gradients.length;
+  return Math.abs(hash);
 };
 
-const selectedGradient = gradients[getGradientIndex(title)];
+const hash = getHash(title);
+
+// 预设的渐变色方案（更丰富的色彩组合）
+const colorSchemes = [
+  { from: '#06b6d4', to: '#3b82f6', accent: '#8b5cf6' },  // 青蓝紫
+  { from: '#10b981', to: '#059669', accent: '#14b8a6' },  // 翠绿
+  { from: '#f59e0b', to: '#ef4444', accent: '#ec4899' },  // 橙红粉
+  { from: '#8b5cf6', to: '#6366f1', accent: '#3b82f6' },  // 紫靛蓝
+  { from: '#14b8a6', to: '#06b6d4', accent: '#0891b2' },  // 青绿
+  { from: '#f97316', to: '#fb923c', accent: '#fdba74' },  // 橙色系
+  { from: '#6366f1', to: '#8b5cf6', accent: '#a78bfa' },  // 靛紫
+  { from: '#0ea5e9', to: '#0284c7', accent: '#06b6d4' },  // 天蓝
+  { from: '#ec4899', to: '#db2777', accent: '#f472b6' },  // 粉色系
+  { from: '#22c55e', to: '#16a34a', accent: '#4ade80' },  // 绿色系
+];
+
+const schemeIndex = hash % colorSchemes.length;
+const scheme = colorSchemes[schemeIndex];
+
+// 生成独特的图案参数
+const pattern = {
+  circles: (hash % 3) + 2,           // 2-4个圆形
+  rotation: (hash % 360),             // 旋转角度
+  scale: 0.8 + (hash % 40) / 100,    // 0.8-1.2 缩放
+  opacity: 0.15 + (hash % 15) / 100, // 透明度
+};
+
+// 生成唯一的渐变 ID
+const gradientId = `gradient-${hash}`;
+const patternId = `pattern-${hash}`;
 ---
 
-<div 
-  class={`relative flex items-center justify-center bg-gradient-to-br ${selectedGradient} overflow-hidden ${className}`}
->
-  <!-- 背景装饰元素 -->
-  <div class="absolute inset-0 opacity-20">
-    <!-- 圆形装饰 -->
-    <div class="absolute top-4 right-4 w-16 h-16 bg-white rounded-full opacity-30"></div>
-    <div class="absolute bottom-6 left-6 w-12 h-12 bg-white rounded-full opacity-20"></div>
-    <!-- 几何装饰 -->
-    <div class="absolute top-1/2 left-4 w-8 h-8 bg-white transform rotate-45 opacity-25"></div>
-  </div>
+<div class={`relative overflow-hidden ${className}`}>
+  <!-- SVG 背景 -->
+  <svg 
+    class="absolute inset-0 w-full h-full"
+    viewBox="0 0 800 400"
+    xmlns="http://www.w3.org/2000/svg"
+    preserveAspectRatio="xMidYMid slice"
+  >
+    <defs>
+      <!-- 渐变定义 -->
+      <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style={`stop-color:${scheme.from};stop-opacity:1`} />
+        <stop offset="100%" style={`stop-color:${scheme.to};stop-opacity:1`} />
+      </linearGradient>
+      
+      <!-- 图案定义 -->
+      <pattern id={patternId} x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
+        <circle cx="100" cy="100" r="80" fill={scheme.accent} opacity={pattern.opacity} />
+        <circle cx="0" cy="0" r="60" fill={scheme.accent} opacity={pattern.opacity * 0.6} />
+        <circle cx="200" cy="200" r="60" fill={scheme.accent} opacity={pattern.opacity * 0.6} />
+      </pattern>
+    </defs>
+    
+    <!-- 主背景 -->
+    <rect width="800" height="400" fill={`url(#${gradientId})`} />
+    
+    <!-- 图案层 -->
+    <rect width="800" height="400" fill={`url(#${patternId})`} />
+    
+    <!-- 动态几何图形 -->
+    {Array.from({ length: pattern.circles }).map((_, i) => {
+      const x = ((hash * (i + 1)) % 700) + 50;
+      const y = ((hash * (i + 2)) % 300) + 50;
+      const r = ((hash * (i + 3)) % 80) + 40;
+      return (
+        <circle 
+          cx={x} 
+          cy={y} 
+          r={r} 
+          fill={scheme.accent}
+          opacity={pattern.opacity * (0.3 + i * 0.1)}
+        />
+      );
+    })}
+    
+    <!-- 装饰性线条 -->
+    <g opacity="0.1" transform={`rotate(${pattern.rotation} 400 200)`}>
+      <line x1="0" y1="200" x2="800" y2="200" stroke="white" stroke-width="2" />
+      <line x1="400" y1="0" x2="400" y2="400" stroke="white" stroke-width="2" />
+    </g>
+    
+    <!-- 光泽效果 -->
+    <rect 
+      width="800" 
+      height="400" 
+      fill="url(#shine)" 
+      opacity="0.3"
+    />
+    <defs>
+      <linearGradient id="shine" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:white;stop-opacity:0.2" />
+        <stop offset="50%" style="stop-color:white;stop-opacity:0" />
+        <stop offset="100%" style="stop-color:white;stop-opacity:0.1" />
+      </linearGradient>
+    </defs>
+  </svg>
   
-  <!-- 主要文字 -->
-  <div class="relative z-10 text-center">
-    <div class="text-white font-bold text-4xl md:text-5xl lg:text-6xl tracking-wider drop-shadow-lg">
-      {displayText}
-    </div>
-    <!-- 副标题效果 -->
-    <div class="mt-2 text-white/80 text-sm md:text-base font-medium tracking-wide">
-      {title.length > 10 ? title.slice(0, 10) + '...' : title}
+  <!-- 内容层 -->
+  <div class="relative z-10 flex items-center justify-center h-full">
+    <div class="text-center px-4">
+      <!-- 主标题文字 -->
+      <div 
+        class="text-white font-bold text-4xl md:text-5xl lg:text-6xl tracking-wider mb-2"
+        style="text-shadow: 0 4px 6px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.2);"
+      >
+        {displayText}
+      </div>
+      
+      <!-- 副标题 -->
+      <div 
+        class="text-white/90 text-sm md:text-base font-medium tracking-wide max-w-md mx-auto"
+        style="text-shadow: 0 2px 4px rgba(0,0,0,0.3);"
+      >
+        {title.length > 20 ? title.slice(0, 20) + '...' : title}
+      </div>
     </div>
   </div>
-  
-  <!-- 光泽效果 -->
-  <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-50"></div>
 </div>
-
-<style>
-  /* 确保文字在各种背景下都清晰可见 */
-  .drop-shadow-lg {
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
-  }
-</style>
