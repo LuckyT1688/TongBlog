@@ -7,6 +7,7 @@
   font-family: '吉页大字体简';
   // font-family: "PingFang SC", " Hiragino Sans GB", " Microsoft YaHei";
   font-weight: 400;
+  font-display: swap; /* 优化字体加载，防止阻塞渲染 */
   src: url('/fonts/吉页大字体简.ttf') format('truetype');
 }
 

@@ -95,8 +95,15 @@ const customFooterCode = customSettings?.custom_footer_code || "";
 
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=5"
+      content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover"
     />
+    
+    <!-- 移动端优化：禁用自动电话号码识别 -->
+    <meta name="format-detection" content="telephone=no" />
+    
+    <!-- 移动端优化：启用 iOS Web App 模式 -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
     <title>
       {title ? plainify(title) + " | " : ""}{siteTitle + " | " + siteSubTitle}

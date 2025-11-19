@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>移动端检测 - TongBlog</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        h1 { margin-bottom: 20px; font-size: 24px; }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            background: rgba(255,255,255,0.15);
+        }
+        .status.success { background: rgba(34,197,94,0.3); }
+        .status.error { background: rgba(239,68,68,0.3); }
+        .status.warning { background: rgba(251,191,36,0.3); }
+        .info { font-size: 14px; margin: 5px 0; }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        .btn:active { transform: scale(0.95); }
+        #results { margin-top: 20px; }
+        .loading { 
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 TongBlog 移动端诊断</h1>
+        
+        <div class="status">
+            <div class="info"><strong>设备类型：</strong><span id="deviceType"></span></div>
+            <div class="info"><strong>浏览器：</strong><span id="browser"></span></div>
+            <div class="info"><strong>屏幕尺寸：</strong><span id="screenSize"></span></div>
+            <div class="info"><strong>网络状态：</strong><span id="network"></span></div>
+        </div>
+
+        <div id="results"></div>
+
+        <a href="/" class="btn">返回首页</a>
+        <a href="#" class="btn" onclick="location.reload(); return false;">重新检测</a>
+    </div>
+
+    <script>
+        // 检测设备信息
+        const ua = navigator.userAgent;
+        const isMobile = /iPhone|iPad|iPod|Android|Mobile/i.test(ua);
+        const isIOS = /iPhone|iPad|iPod/i.test(ua);
+        const isAndroid = /Android/i.test(ua);
+        const isWeChat = /MicroMessenger/i.test(ua);
+        
+        document.getElementById('deviceType').textContent = 
+            isMobile ? (isIOS ? 'iOS' : isAndroid ? 'Android' : '移动设备') : '桌面设备';
+        
+        // 检测浏览器
+        let browserName = '未知';
+        if (isWeChat) browserName = '微信浏览器';
+        else if (/Chrome/i.test(ua)) browserName = 'Chrome';
+        else if (/Safari/i.test(ua)) browserName = 'Safari';
+        else if (/Firefox/i.test(ua)) browserName = 'Firefox';
+        document.getElementById('browser').textContent = browserName;
+        
+        // 屏幕信息
+        document.getElementById('screenSize').textContent = 
+            `${window.innerWidth} × ${window.innerHeight}`;
+        
+        // 网络状态
+        const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        const networkType = connection ? connection.effectiveType : '未知';
+        document.getElementById('network').textContent = navigator.onLine ? 
+            `在线 (${networkType})` : '离线';
+
+        // 开始检测
+        const results = document.getElementById('results');
+        
+        async function runTests() {
+            const tests = [
+                {
+                    name: '主页访问测试',
+                    url: '/',
+                    critical: true
+                },
+                {
+                    name: '字体加载测试',
+                    url: '/fonts/吉页大字体简.ttf',
+                    critical: false
+                },
+                {
+                    name: 'KaTeX CSS 加载测试',
+                    url: 'https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css',
+                    critical: false
+                },
+                {
+                    name: 'Twikoo 评论测试',
+                    url: 'https://cdn.jsdelivr.net/npm/twikoo@1.6.44/dist/twikoo.min.js',
+                    critical: false
+                }
+            ];
+
+            for (const test of tests) {
+                const statusDiv = document.createElement('div');
+                statusDiv.className = 'status';
+                statusDiv.innerHTML = `
+                    <div class="info">
+                        <strong>${test.name}：</strong>
+                        <span class="loading"></span> 检测中...
+                    </div>
+                `;
+                results.appendChild(statusDiv);
+
+                try {
+                    const startTime = performance.now();
+                    const response = await fetch(test.url, { 
+                        method: 'HEAD',
+                        cache: 'no-cache'
+                    });
+                    const endTime = performance.now();
+                    const duration = Math.round(endTime - startTime);
+
+                    if (response.ok) {
+                        statusDiv.className = 'status success';
+                        statusDiv.innerHTML = `
+                            <div class="info">
+                                <strong>${test.name}：</strong>✅ 正常 (${duration}ms)
+                            </div>
+                        `;
+                    } else {
+                        statusDiv.className = test.critical ? 'status error' : 'status warning';
+                        statusDiv.innerHTML = `
+                            <div class="info">
+                                <strong>${test.name}：</strong>
+                                ${test.critical ? '❌' : '⚠️'} 
+                                失败 (HTTP ${response.status})
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    statusDiv.className = test.critical ? 'status error' : 'status warning';
+                    statusDiv.innerHTML = `
+                        <div class="info">
+                            <strong>${test.name}：</strong>
+                            ${test.critical ? '❌' : '⚠️'} 
+                            ${error.message}
+                        </div>
+                    `;
+                }
+            }
+
+            // 总结
+            const summaryDiv = document.createElement('div');
+            summaryDiv.className = 'status';
+            summaryDiv.innerHTML = `
+                <div class="info">
+                    <strong>诊断完成</strong><br>
+                    如果主页访问测试失败，请检查网络连接或联系管理员。<br>
+                    其他资源加载失败不影响基本浏览。
+                </div>
+            `;
+            results.appendChild(summaryDiv);
+        }
+
+        runTests();
+    </script>
+</body>
+</html>
