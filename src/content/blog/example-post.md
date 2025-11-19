@@ -1,10 +1,12 @@
 ---
 title: "示例文章"
 description: "这是一篇示例博客文章，展示如何编写文章"
-date: 2025-11-14
+publishedAt: 2025-11-14T15:00:00
+updatedAt: 2025-11-14T15:00:00
 author: "Tong"
 tags: ["示例", "入门"]
 categories: ["教程"]
+status: published
 draft: false
 ---
 

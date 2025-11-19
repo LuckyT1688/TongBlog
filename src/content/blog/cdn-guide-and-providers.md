@@ -1,8 +1,8 @@
 ---
 title: CDN 完全指南：从原理到实战，国内外服务商全面对比
 description: 网站慢如蜗牛？访问经常超时？看完这篇文章，你会知道 CDN 是怎么让你的网站飞起来的
-publishedAt: 2025-11-19
-updatedAt: 2025-11-19
+publishedAt: 2025-11-19T14:32:05
+updatedAt: 2025-11-19T14:32:05
 status: published
 featured: true
 categories:

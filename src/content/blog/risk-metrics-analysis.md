@@ -1,7 +1,8 @@
 ---
 title: "风险指标计算与分析实战"
 description: "详细介绍金融风险管理中常用的指标计算方法，包括 VaR、CVaR、夏普比率、最大回撤等"
-publishedAt: 2025-11-11
+publishedAt: 2025-11-11T09:30:15
+updatedAt: 2025-11-11T09:30:15
 categories: ["风险管理"]
 tags: ["风险管理", "VaR", "夏普比率", "Python"]
 status: published

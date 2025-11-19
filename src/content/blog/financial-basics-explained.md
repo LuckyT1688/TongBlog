@@ -1,8 +1,8 @@
 ---
-title: 金融基础概念笔记：从业务角度理解那些常见指标
-description: 工作中经常遇到的金融术语和指标，用大白话解释一遍
-publishedAt: 2025-11-19
-updatedAt: 2025-11-19
+title: 金融基础知识速查手册：PE、PB、ROE 到底是什么
+description: 刚进金融行业时，开会听到一堆专业术语完全懵圈。PE、PB、ROE、夏普比率...这都是啥？
+publishedAt: 2025-11-19T09:40:52
+updatedAt: 2025-11-19T09:40:52
 status: published
 featured: false
 categories:

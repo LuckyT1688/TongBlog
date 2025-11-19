@@ -1,8 +1,8 @@
 ---
-title: 金融资讯推荐中的协同过滤算法实践
-description: 从实际项目出发，聊聊协同过滤在金融新闻推荐系统中的应用和踩过的坑
-publishedAt: 2025-11-19
-updatedAt: 2025-11-19
+title: 金融资讯推荐系统中的协同过滤算法实践
+description: 业务需求来了，用户说资讯太多看不过来。产品说要做个性化推荐，让用户只看感兴趣的内容
+publishedAt: 2025-11-19T08:25:16
+updatedAt: 2025-11-19T08:25:16
 status: published
 featured: false
 categories:

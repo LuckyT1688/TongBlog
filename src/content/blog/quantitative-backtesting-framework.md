@@ -1,7 +1,8 @@
 ---
-title: "量化投资策略回测框架搭建"
-description: "从零开始构建一个简单但完整的量化投资策略回测系统，包括数据准备、策略实现、性能评估等"
-publishedAt: 2025-11-13
+title: "量化交易回测框架搭建：从零开始"
+description: "手把手教你搭建一个完整的量化交易回测系统，包括数据处理、策略实现、性能分析等"
+publishedAt: 2025-11-13T16:45:22
+updatedAt: 2025-11-13T16:45:22
 categories: ["量化投资"]
 tags: ["Python", "回测", "量化策略", "投资组合"]
 featured: true

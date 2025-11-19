@@ -1,7 +1,8 @@
 ---
-title: "金融时间序列数据可视化最佳实践"
-description: "使用 Python 的 Matplotlib 和 Plotly 创建专业的金融图表，包括K线图、技术指标图、收益分布等"
-publishedAt: 2025-11-12
+title: "金融数据可视化：从基础图表到高级仪表盘"
+description: "全面介绍使用 Python 进行金融数据可视化的技术和最佳实践"
+publishedAt: 2025-11-12T14:20:33
+updatedAt: 2025-11-12T14:20:33
 categories: ["数据可视化"]
 tags: ["Python", "Matplotlib", "Plotly", "数据可视化", "K线图"]
 status: published

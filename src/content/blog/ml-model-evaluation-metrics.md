@@ -1,10 +1,12 @@
 ---
 title: "机器学习模型评估指标全解析：从混淆矩阵到 ROC 曲线"
 description: "深入浅出地讲解分类模型和回归模型的各类评估指标，帮助你在实际项目中选择合适的评估方法"
-date: 2025-11-17
+publishedAt: 2025-11-17T11:30:27
+updatedAt: 2025-11-17T11:30:27
 author: "Tong"
 tags: ["机器学习", "模型评估", "数据分析", "Python"]
 categories: ["机器学习"]
+status: published
 draft: false
 complexity: 2
 ---

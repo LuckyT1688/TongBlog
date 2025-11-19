@@ -1,7 +1,8 @@
 ---
-title: "使用 Pandas 进行金融数据分析入门"
-description: "介绍如何使用 Python Pandas 库处理和分析金融时间序列数据，包括数据清洗、指标计算等实用技巧"
-publishedAt: 2025-11-14
+title: "Pandas 金融数据分析实战：从入门到精通"
+description: "深入讲解如何使用 Pandas 进行金融数据分析，包括数据清洗、特征工程、时间序列处理等"
+publishedAt: 2025-11-14T10:15:48
+updatedAt: 2025-11-14T10:15:48
 categories: ["数据分析"]
 tags: ["Python", "Pandas", "金融数据", "时间序列"]
 featured: true
