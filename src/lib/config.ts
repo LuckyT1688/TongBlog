@@ -46,6 +46,10 @@ export const SITE_INFO = {
   KEY_WORDS: '数据分析,Python,Tong',
   GOOGLE_ANALYTICS_ID: 'G-XXXXXX',  // 需改为你自己的Google Analytics ID
   BAIDU_ANALYTICS_ID: 'XXXXXXXXXX', // 需改为你自己的百度分析ID
+  // GitHub 仓库
+  GITHUB_REPO: 'https://github.com/LuckyT1688/TongBlog',
+  // 联系邮箱
+  EMAIL: 'contact@litong.asia',
   // 网站初始时间（用于计算运行时长）
   START_DATE: '2025-11-14',
   // ICP 备案信息
