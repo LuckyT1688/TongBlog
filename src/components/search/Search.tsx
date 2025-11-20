@@ -27,21 +27,37 @@ const SearchPage = () => {
     setInputVal(e.currentTarget.value);
   };
 
-  // Load Pagefind
+  // Load Pagefind by injecting script at runtime to avoid Vite resolving it during build
   useEffect(() => {
-    const loadPagefind = async () => {
-      if (typeof window !== "undefined") {
-        try {
-          // @ts-ignore
-          window.pagefind = await import(/* @vite-ignore */ "/pagefind/pagefind.js");
-          await window.pagefind.init();
+    if (typeof window === "undefined") return;
+
+    // If already loaded, mark as loaded
+    if ((window as any).pagefind) {
+      setIsPagefindLoaded(true);
+      return;
+    }
+
+    const scriptId = "pagefind-script";
+    if (document.getElementById(scriptId)) return;
+
+    const script = document.createElement("script");
+    script.id = scriptId;
+    script.src = "/pagefind/pagefind.js";
+    script.async = true;
+    script.onload = async () => {
+      try {
+        if ((window as any).pagefind && (window as any).pagefind.init) {
+          await (window as any).pagefind.init();
           setIsPagefindLoaded(true);
-        } catch (e) {
-          console.warn("Pagefind failed to load (this is expected in dev mode unless configured):", e);
         }
+      } catch (e) {
+        console.warn("Pagefind init failed:", e);
       }
     };
-    loadPagefind();
+    script.onerror = (e) => {
+      console.warn("Failed to load pagefind script:", e);
+    };
+    document.head.appendChild(script);
   }, []);
 
   useEffect(() => {
