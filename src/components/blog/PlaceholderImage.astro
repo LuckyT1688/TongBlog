@@ -6,9 +6,6 @@ interface Props {
 
 const { title, className = "" } = Astro.props;
 
-// 从标题中提取前两个字符作为显示文字
-const displayText = title.slice(0, 2).toUpperCase();
-
 // 生成稳定的哈希值
 const getHash = (str: string) => {
   let hash = 0;
@@ -22,121 +19,105 @@ const getHash = (str: string) => {
 
 const hash = getHash(title);
 
-// 预设的渐变色方案（更丰富的色彩组合）
+// 弥散光感配色方案（更柔和、高级的渐变）
 const colorSchemes = [
-  { from: '#06b6d4', to: '#3b82f6', accent: '#8b5cf6' },  // 青蓝紫
-  { from: '#10b981', to: '#059669', accent: '#14b8a6' },  // 翠绿
-  { from: '#f59e0b', to: '#ef4444', accent: '#ec4899' },  // 橙红粉
-  { from: '#8b5cf6', to: '#6366f1', accent: '#3b82f6' },  // 紫靛蓝
-  { from: '#14b8a6', to: '#06b6d4', accent: '#0891b2' },  // 青绿
-  { from: '#f97316', to: '#fb923c', accent: '#fdba74' },  // 橙色系
-  { from: '#6366f1', to: '#8b5cf6', accent: '#a78bfa' },  // 靛紫
-  { from: '#0ea5e9', to: '#0284c7', accent: '#06b6d4' },  // 天蓝
-  { from: '#ec4899', to: '#db2777', accent: '#f472b6' },  // 粉色系
-  { from: '#22c55e', to: '#16a34a', accent: '#4ade80' },  // 绿色系
+  { bg: '#e0e7ff', c1: '#818cf8', c2: '#c084fc', c3: '#60a5fa' }, // 蓝紫梦幻
+  { bg: '#f0fdf4', c1: '#4ade80', c2: '#2dd4bf', c3: '#34d399' }, // 清新薄荷
+  { bg: '#fff1f2', c1: '#fb7185', c2: '#f472b6', c3: '#e879f9' }, // 甜美粉红
+  { bg: '#fff7ed', c1: '#fb923c', c2: '#facc15', c3: '#fdba74' }, // 温暖日落
+  { bg: '#f8fafc', c1: '#94a3b8', c2: '#64748b', c3: '#cbd5e1' }, // 极简灰调
+  { bg: '#ecfeff', c1: '#22d3ee', c2: '#0ea5e9', c3: '#67e8f9' }, // 海洋之心
+  { bg: '#fdf4ff', c1: '#d8b4fe', c2: '#f0abfc', c3: '#c4b5fd' }, // 薰衣草
+  { bg: '#fefce8', c1: '#fde047', c2: '#facc15', c3: '#fef08a' }, // 柠檬黄
 ];
 
 const schemeIndex = hash % colorSchemes.length;
 const scheme = colorSchemes[schemeIndex];
 
-// 生成独特的图案参数
-const pattern = {
-  circles: (hash % 3) + 2,           // 2-4个圆形
-  rotation: (hash % 360),             // 旋转角度
-  scale: 0.8 + (hash % 40) / 100,    // 0.8-1.2 缩放
-  opacity: 0.15 + (hash % 15) / 100, // 透明度
-};
+// 生成随机的光斑位置和大小
+const blobs = Array.from({ length: 3 }).map((_, i) => {
+  const seed = hash + i * 100;
+  return {
+    cx: (seed % 80) + 10 + '%',      // 10% - 90%
+    cy: ((seed * 2) % 80) + 10 + '%', // 10% - 90%
+    r: (seed % 20) + 30 + '%',       // 30% - 50%
+    color: i === 0 ? scheme.c1 : i === 1 ? scheme.c2 : scheme.c3,
+    delay: (seed % 5) + 's',         // 动画延迟
+    duration: ((seed % 5) + 10) + 's' // 动画时长 10-15s
+  };
+});
 
-// 生成唯一的渐变 ID
-const gradientId = `gradient-${hash}`;
-const patternId = `pattern-${hash}`;
+const gradientId = `blur-filter-${hash}`;
 ---
 
-<div class={`relative overflow-hidden ${className}`}>
-  <!-- SVG 背景 -->
+<div class={`relative overflow-hidden bg-[${scheme.bg}] ${className}`}>
+  <!-- SVG 弥散背景 -->
   <svg 
     class="absolute inset-0 w-full h-full"
-    viewBox="0 0 800 400"
-    xmlns="http://www.w3.org/2000/svg"
     preserveAspectRatio="xMidYMid slice"
+    xmlns="http://www.w3.org/2000/svg"
   >
     <defs>
-      <!-- 渐变定义 -->
-      <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" style={`stop-color:${scheme.from};stop-opacity:1`} />
-        <stop offset="100%" style={`stop-color:${scheme.to};stop-opacity:1`} />
-      </linearGradient>
-      
-      <!-- 图案定义 -->
-      <pattern id={patternId} x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
-        <circle cx="100" cy="100" r="80" fill={scheme.accent} opacity={pattern.opacity} />
-        <circle cx="0" cy="0" r="60" fill={scheme.accent} opacity={pattern.opacity * 0.6} />
-        <circle cx="200" cy="200" r="60" fill={scheme.accent} opacity={pattern.opacity * 0.6} />
-      </pattern>
+      <filter id={gradientId} x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="60" />
+        <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
+      </filter>
     </defs>
     
-    <!-- 主背景 -->
-    <rect width="800" height="400" fill={`url(#${gradientId})`} />
-    
-    <!-- 图案层 -->
-    <rect width="800" height="400" fill={`url(#${patternId})`} />
-    
-    <!-- 动态几何图形 -->
-    {Array.from({ length: pattern.circles }).map((_, i) => {
-      const x = ((hash * (i + 1)) % 700) + 50;
-      const y = ((hash * (i + 2)) % 300) + 50;
-      const r = ((hash * (i + 3)) % 80) + 40;
-      return (
+    <g filter={`url(#${gradientId})`}>
+      {blobs.map((blob, i) => (
         <circle 
-          cx={x} 
-          cy={y} 
-          r={r} 
-          fill={scheme.accent}
-          opacity={pattern.opacity * (0.3 + i * 0.1)}
-        />
-      );
-    })}
-    
-    <!-- 装饰性线条 -->
-    <g opacity="0.1" transform={`rotate(${pattern.rotation} 400 200)`}>
-      <line x1="0" y1="200" x2="800" y2="200" stroke="white" stroke-width="2" />
-      <line x1="400" y1="0" x2="400" y2="400" stroke="white" stroke-width="2" />
+          cx={blob.cx} 
+          cy={blob.cy} 
+          r={blob.r} 
+          fill={blob.color} 
+          opacity="0.8"
+        >
+          {/* 添加缓慢的漂浮动画 */}
+          <animate 
+            attributeName="cx" 
+            values={`${blob.cx};${parseInt(blob.cx) + 10}%;${parseInt(blob.cx) - 10}%;${blob.cx}`} 
+            dur={blob.duration} 
+            repeatCount="indefinite"
+            begin={blob.delay}
+          />
+          <animate 
+            attributeName="cy" 
+            values={`${blob.cy};${parseInt(blob.cy) - 10}%;${parseInt(blob.cy) + 10}%;${blob.cy}`} 
+            dur={blob.duration} 
+            repeatCount="indefinite" 
+            begin={blob.delay}
+          />
+        </circle>
+      ))}
     </g>
-    
-    <!-- 光泽效果 -->
-    <rect 
-      width="800" 
-      height="400" 
-      fill="url(#shine)" 
-      opacity="0.3"
-    />
-    <defs>
-      <linearGradient id="shine" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" style="stop-color:white;stop-opacity:0.2" />
-        <stop offset="50%" style="stop-color:white;stop-opacity:0" />
-        <stop offset="100%" style="stop-color:white;stop-opacity:0.1" />
-      </linearGradient>
-    </defs>
   </svg>
   
+  <!-- 噪点纹理叠加 (增加质感) -->
+  <div class="absolute inset-0 opacity-20 mix-blend-overlay pointer-events-none" 
+       style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%221%22/%3E%3C/svg%3E');">
+  </div>
+
   <!-- 内容层 -->
-  <div class="relative z-10 flex items-center justify-center h-full">
-    <div class="text-center px-4">
-      <!-- 主标题文字 -->
-      <div 
-        class="text-white font-bold text-4xl md:text-5xl lg:text-6xl tracking-wider mb-2"
-        style="text-shadow: 0 4px 6px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.2);"
-      >
-        {displayText}
-      </div>
-      
-      <!-- 副标题 -->
-      <div 
-        class="text-white/90 text-sm md:text-base font-medium tracking-wide max-w-md mx-auto"
-        style="text-shadow: 0 2px 4px rgba(0,0,0,0.3);"
-      >
-        {title.length > 20 ? title.slice(0, 20) + '...' : title}
-      </div>
+  <div class="relative z-10 flex flex-col items-center justify-center h-full p-6 text-center">
+    <!-- 装饰性图标/文字 -->
+    <div class="mb-4 opacity-80">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-slate-700 dark:text-white/90">
+        <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
+        <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+        <path d="M2 2l7.586 7.586"></path>
+        <circle cx="11" cy="11" r="2"></circle>
+      </svg>
     </div>
+
+    <!-- 标题 -->
+    <h3 
+      class="text-slate-800 dark:text-white font-bold text-2xl md:text-3xl tracking-tight leading-tight line-clamp-2 drop-shadow-sm"
+    >
+      {title}
+    </h3>
+    
+    <!-- 装饰线 -->
+    <div class="w-12 h-1 bg-slate-800/20 dark:bg-white/30 rounded-full mt-4"></div>
   </div>
 </div>
