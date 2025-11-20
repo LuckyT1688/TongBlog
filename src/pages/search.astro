@@ -18,10 +18,10 @@ const searchableCollections = [
 const searchList = (await getEntriesBatch(
 	searchableCollections,
 	undefined,
-	false,
+  false,
 )) as SearchableEntry[];
 
-console.log("准备搜索列表", searchList);
+// console.log("准备搜索列表", searchList);
 ---
 
 <EntryLayout searchList={searchList} />
