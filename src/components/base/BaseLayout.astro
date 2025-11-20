@@ -7,7 +7,6 @@ import { ClientRouter } from "astro:transitions";
 import Background from "@/components/base/Background.astro";
 import { Tooltips } from "astro-tooltips";
 import { SITE_INFO } from "@lib/config";
-import { isDevelopment } from "@lib/env";
 
 // types for frontmatters
 export interface Props {
@@ -215,18 +214,18 @@ const customFooterCode = customSettings?.custom_footer_code || "";
 
     <!-- Google Analytics - 仅在生产环境加载 -->
     {
-      !isDevelopment() && googleAnalyticsId && (
+      import.meta.env.PROD && (
         <>
           <script
             async
-            src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`}
+            src={`https://www.googletagmanager.com/gtag/js?id=G-5D1ZFKFT03`}
           />
           <script
             set:html={`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', '${googleAnalyticsId}');
+          gtag('config', 'G-5D1ZFKFT03');
         `}
           />
         </>
@@ -235,13 +234,13 @@ const customFooterCode = customSettings?.custom_footer_code || "";
 
     <!-- 百度统计 - 仅在生产环境加载 -->
     {
-      !isDevelopment() && baiduAnalyticsId && (
+      import.meta.env.PROD && (
         <script
           set:html={`
         var _hmt = _hmt || [];
         (function() {
           var hm = document.createElement("script");
-          hm.src = "https://hm.baidu.com/hm.js?${baiduAnalyticsId}";
+          hm.src = "https://hm.baidu.com/hm.js?0808d9763253095865697474560055d9";
           var s = document.getElementsByTagName("script")[0]; 
           s.parentNode.insertBefore(hm, s);
         })();
