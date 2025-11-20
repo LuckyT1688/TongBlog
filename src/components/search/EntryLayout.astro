@@ -1,15 +1,16 @@
 ---
 import type { SearchableEntry } from "@/types";
+import type { SearchableEntry } from "@/types";
 import BaseLayout from "@components/base/BaseLayout.astro";
 import Search from "@components/search/Search";
 
 interface Props {
-  // searchList: SearchableEntry[]; // 不再需要
+  searchList: SearchableEntry[];
 }
 
-// const { searchList } = Astro.props;
+const { searchList } = Astro.props;
 ---
 
 <BaseLayout title="Search" description="Search for content on this site">
-  <Search client:only="react" />
+  <Search client:load searchList={searchList} />
 </BaseLayout>

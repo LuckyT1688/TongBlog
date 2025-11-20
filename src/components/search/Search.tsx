@@ -1,70 +1,45 @@
+import type { SearchableEntry } from "@/types"
 import React, { useEffect, useRef, useState } from "react";
+import { plainify } from "@lib/textConverter";
+import Fuse from "fuse.js";
+
+const descriptionLength = 100;
+
+interface Props {
+  searchList: SearchableEntry[];
+}
 
 interface SearchResult {
-  item: {
-    data: {
-      title: string;
-      description?: string;
-      createdAt?: string;
-    };
-    url: string;
-  };
+  item: SearchableEntry;
+  refIndex: number;
 }
 
-declare global {
-  interface Window {
-    pagefind: any;
-  }
-}
+const getPath = (entry: SearchableEntry) => {
+  return `${entry.collection}/${entry.id.replace("-index", "")}`;
+};
 
-const SearchPage = () => {
+const SearchPage = ({ searchList }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputVal, setInputVal] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
-  const [isPagefindLoaded, setIsPagefindLoaded] = useState(false);
 
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
     setInputVal(e.currentTarget.value);
   };
 
-  // Load Pagefind by injecting script at runtime to avoid Vite resolving it during build
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    // If already loaded, mark as loaded
-    if ((window as any).pagefind) {
-      setIsPagefindLoaded(true);
-      return;
-    }
-
-    const scriptId = "pagefind-script";
-    if (document.getElementById(scriptId)) return;
-
-    const script = document.createElement("script");
-    script.id = scriptId;
-    script.src = "/pagefind/pagefind.js";
-    script.async = true;
-    script.onload = async () => {
-      try {
-        if ((window as any).pagefind && (window as any).pagefind.init) {
-          await (window as any).pagefind.init();
-          setIsPagefindLoaded(true);
-        }
-      } catch (e) {
-        console.warn("Pagefind init failed:", e);
-      }
-    };
-    script.onerror = (e) => {
-      console.warn("Failed to load pagefind script:", e);
-    };
-    document.head.appendChild(script);
-  }, []);
+  const fuse = new Fuse(searchList, {
+    keys: ["data.title", "data.description", "id", "collection", "body"],
+    includeMatches: true,
+    minMatchCharLength: 2,
+    threshold: 0.5,
+  });
 
   useEffect(() => {
     const searchUrl = new URLSearchParams(window.location.search);
     const searchStr = searchUrl.get("q");
     if (searchStr) setInputVal(searchStr);
 
+    // 优化：使用requestAnimationFrame替代setTimeout，提升性能
     requestAnimationFrame(() => {
       if (inputRef.current) {
         inputRef.current.selectionStart = inputRef.current.selectionEnd =
@@ -74,41 +49,20 @@ const SearchPage = () => {
   }, []);
 
   useEffect(() => {
-    const performSearch = async () => {
-      if (inputVal.length >= 2 && isPagefindLoaded && window.pagefind) {
-        const search = await window.pagefind.search(inputVal);
-        // Get top 10 results
-        const results = await Promise.all(search.results.slice(0, 10).map((r: any) => r.data()));
-        
-        const mappedResults = results.map((data: any) => ({
-          item: {
-            data: {
-              title: data.meta.title,
-              description: data.excerpt, // Pagefind returns HTML excerpt
-              createdAt: data.meta.date,
-            },
-            url: data.url,
-          },
-        }));
-        
-        setSearchResults(mappedResults);
+    let inputResult = inputVal.length >= 2 ? fuse.search(inputVal) : [];
+    setSearchResults(inputResult);
 
-        const searchParams = new URLSearchParams(window.location.search);
-        searchParams.set("q", inputVal);
-        const newRelativePathQuery =
-          window.location.pathname + "?" + searchParams.toString();
-        history.pushState(null, "", newRelativePathQuery);
-      } else {
-        if (inputVal.length < 2) {
-            history.pushState(null, "", window.location.pathname);
-            setSearchResults([]);
-        }
-      }
-    };
-
-    const timeoutId = setTimeout(performSearch, 300);
-    return () => clearTimeout(timeoutId);
-  }, [inputVal, isPagefindLoaded]);
+    if (inputVal.length >= 2) {
+      const searchParams = new URLSearchParams(window.location.search);
+      searchParams.set("q", inputVal);
+      const newRelativePathQuery =
+        window.location.pathname + "?" + searchParams.toString();
+      history.pushState(null, "", newRelativePathQuery);
+    } else {
+      history.pushState(null, "", window.location.pathname);
+      setSearchResults([]);
+    }
+  }, [inputVal]);
 
   return (
     <section className="">
@@ -118,7 +72,7 @@ const SearchPage = () => {
             <div className="flex flex-nowrap">
               <input
                 className="w-full glass rounded-[35px] p-6 text-txt-p placeholder:text-txt-light dark:placeholder:text-darkmode-txt-light focus:border-darkmode-border focus:ring-transparent dark:text-darkmode-txt-light intersect:animate-fadeDown opacity-0 intersect-no-queue"
-                placeholder={isPagefindLoaded ? "搜点什么..." : "搜索功能仅在构建后可用"}
+                placeholder="搜点什么"
                 type="search"
                 name="search"
                 value={inputVal}
@@ -126,7 +80,6 @@ const SearchPage = () => {
                 autoComplete="off"
                 autoFocus
                 ref={inputRef}
-                disabled={!isPagefindLoaded}
               />
             </div>
           </div>
@@ -135,9 +88,7 @@ const SearchPage = () => {
           {searchResults?.length < 1 ? (
             <div className="col-10 lg:col-8 mx-auto p-2 text-center glass rounded-[35px] intersect:animate-fadeUp opacity-0">
               <p id="no-result">
-                {!isPagefindLoaded 
-                  ? "开发模式下搜索不可用，请 build 后测试" 
-                  : inputVal.length < 1
+                {inputVal.length < 1
                   ? "“嗖”的一下，就搜出来了！"
                   : inputVal.length < 2
                   ? "请输入2个以上字符"
@@ -149,16 +100,19 @@ const SearchPage = () => {
                 <div className="py-2 px-0" key={`search-${index}`}>
                   <div className="h-full glass col-10 lg:col-8 mx-auto rounded-[35px] p-6 intersect:animate-fade opacity-0">
                     <h4 className="mb-2">
-                      <a href={item.url}>
-                      {item.item.data.title}
+                      <a href={"/" + getPath(item)}>
+                      {item.data.title}
                       </a>
                     </h4>
-                  { item.item.data.description && (
-                    <p className="" dangerouslySetInnerHTML={{ __html: item.item.data.description }} />
+                  { item.data.description && (
+                    <p className="">{item.data.description}</p>
                     )}
-                  {item.item.data.createdAt && (
+                  {  !item.data.description && item.body && (
+                    <p className="">{plainify(item.body.slice(0, descriptionLength))}</p>
+                    )}
+                  {item.data.createdAt && (
                     <p className="text-txt-light dark:text-darkmode-txt-light">
-                      {new Date(item.item.data.createdAt).toLocaleDateString()}
+                      {new Date(item.data.createdAt).toLocaleDateString()}
                     </p>
                   )}
                   </div>
