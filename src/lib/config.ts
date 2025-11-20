@@ -44,8 +44,8 @@ export const SITE_INFO = {
   DEV_URL: 'http://localhost:4321',
   LOGO_IMAGE: '/favicon/立里.jpg',
   KEY_WORDS: '数据分析,Python,Tong',
-  GOOGLE_ANALYTICS_ID: 'G-XXXXXX',  // 需改为你自己的Google Analytics ID
-  BAIDU_ANALYTICS_ID: 'XXXXXXXXXX', // 需改为你自己的百度分析ID
+  GOOGLE_ANALYTICS_ID: import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID || '', 
+  BAIDU_ANALYTICS_ID: import.meta.env.PUBLIC_BAIDU_ANALYTICS_ID || '',
   // GitHub 仓库
   GITHUB_REPO: 'https://github.com/LuckyT1688/TongBlog',
   // 联系邮箱
