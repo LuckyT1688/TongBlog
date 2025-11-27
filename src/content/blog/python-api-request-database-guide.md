@@ -1,12 +1,17 @@
 ---
 title: 从API文档到数据入库：Python接口开发实战
-published: 2025-11-27T14:30:00
-updatedAt: 2025-11-27T19:30:27
 description: 手把手教你看懂API文档、构造请求参数、解析响应数据并存入数据库，零基础也能上手的完整流程
-image: ""
-tags: [Python, API, 数据库, 爬虫]
-categories: [技术教程]
-draft: false
+publishedAt: 2025-11-27T19:30:00
+updatedAt: 2025-11-27T19:30:00
+status: published
+featured: true
+categories:
+  - 技术教程
+tags:
+  - Python
+  - API
+  - 数据库
+  - 爬虫
 ---
 
 ## 起因
