@@ -4,7 +4,7 @@ published: 2025-11-27T14:30:00
 description: 手把手教你看懂API文档、构造请求参数、解析响应数据并存入数据库，零基础也能上手的完整流程
 image: ""
 tags: [Python, API, 数据库, 爬虫]
-category: 技术教程
+categories: [技术教程]
 draft: false
 ---
 
